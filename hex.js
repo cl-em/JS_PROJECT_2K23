@@ -37,8 +37,8 @@ function creerTablier(nblignes,nbcolonnes){
             .append("path")
             .attr("d",d)
             .attr("stroke","black").attr("fill","white")
-            .attr("id","h"+(ligne*nblignes+colonne))
-            .on("click",function(){
+            .attr("id","h"+(ligne*nblignes+colonne));
+            /* .on("click",function(){
                 let hexagoneId = d3.select(this).attr("id");
                 // if(d3.select(this).attr("fill")=="white"){
                 //     d3.select("#" + hexagoneId).attr("fill", "blue");
@@ -49,13 +49,14 @@ function creerTablier(nblignes,nbcolonnes){
                 
                 socket.emit("oncarre",hexagoneId);
 
-            });
+            });*/
         }
     }
 }
 
+
 // d3.select("#tablier").append("circle").attr("cy","50").attr("cx","50").attr("r","25").attr("fill","red");
-creerTablier(11,11);
+creerTablier(13,13);
 
 
 
@@ -68,7 +69,5 @@ socket.on("oncarre",data=>{
 });
 
 socket.on("auchargement",(data)=>{
-    data.forEach(element => {
-        d3.select("#"+element).attr("fill","blue");
-    });
+    
 });

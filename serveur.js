@@ -34,6 +34,7 @@ app.get("/css",(request,response)=>{
 let joueurs=[];
 let messages =[];
 let  carreclick= [];
+let terrain = {"roche":84,"prairie": 59,"eau":26};
 
 // socket
 io.on("connection",(socket)=>{
