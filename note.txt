@@ -35,3 +35,5 @@ si satiété ou hydra à 0 -> animal meurt
 case eau : 25.35 -> 26
 case prairi : 59.15 -> 59
 case roche : 84.5 -> 84
+
+salut kyky

@@ -60,7 +60,7 @@ creerTablier(11,11);
 
 
 
-let socket = io();
+// let socket = io();
 socket.emit("auchargement");
 
 socket.on("oncarre",data=>{
