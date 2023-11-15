@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="http://localhost:8888/css" rel="stylesheet" >
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <title>Document</title>
+</head>
+<body>
+    <!-- les trucs pour initialisé la parti (pseudo, stats) -->
+    <div class="initial">
+        <h1>__init__</h1>
+        <input type="text"  id="name">
+        <input type="button" value="entree" onclick="entree()">
+        <input type="button" value="sortie">
+
+        <br>
+        <input type="number"  id="repro" placeholder="taux reproduction" max="5" min="0" >
+        <br>
+        <input type="number" id="percep" placeholder="perception" max="5"  min="0" >
+        <br>
+        <input type="number"  id="force" placeholder="force" max="5" min="0" >
+        <br>
+    </div>
+
+    <!-- damier  -->
+    <div class="damier">
+        <h1>Jeu</h1>
+        <div id="tablier"></div>
+    </div>
+
+    <!-- boite de dialogue (c'est pas demandé mais il est là) -->
+    <div class="chat">
+        <h1>Chat</h1>
+        <input type="text"  id="message">
+        <input type="button" value="envoyer" onclick="message()">
+        <p id="chat">
+
+        </p>
+    </div>
+    
+    
+    
+    <script src="http://localhost:8888/socket" ></script>
+    <script src="http://locahlhost:8888/hex"></script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+client (html): 
+invoque ajax, d3js, socket(localement /socket.io/socket.io.js)
+
+script js (je prefere le faire dans un fichier apart)
+let socket = io();
+
+id=message appelle fun envoiMessage qui appelle une fonction soket.io
+socket.emit(nom méthode,arguement);
+
+dans le client resoit dans la socket.on 
+une reponse du serveur
+
+le serveur renvoit une reponse avec io.emit(nom méthode client, arguement)
+
+(coté serveur)
+socket.emit envoi a un seul client
+io.emit envoie a tous les client
+
+
+
+13*13 tablier, hexagone tanieres, 15% eau 35% prairie 50% rocher
+
+taux hydratation
+taux satiété : de 0 a 10
+
+case eau -> 3 hydratation par tour 
+case prairi -> 2 satiété par tour 
+deplacement -> -1 hydra -0.5 satiété
+un arret ??? -> -0.5 hydra -0.25 satiété 
+
+si satiété ou hydra à 0 -> animal meurt 
+
+
+
+case eau : 25.35 -> 26
+case prairi : 59.15 -> 59
+case roche : 84.5 -> 84
