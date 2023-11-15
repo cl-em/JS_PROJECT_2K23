@@ -30,3 +30,4 @@ socket.on("message",(data)=>{
     chat.innerText+=data.auteur+" : "+data.text+"\n";
     }   
 });
+

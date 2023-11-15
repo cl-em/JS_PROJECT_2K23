@@ -32,14 +32,28 @@ app.get("/css",(request,response)=>{
 });
 
 let joueurs=[];
-let messages =[];
-let  carreclick= [];
+
+let cases=[];
 let terrain = {"roche":84,"prairie": 59,"eau":26};
+let typeTerrain = ["roche","prairie","eau"];
 
 // socket
 io.on("connection",(socket)=>{
     socket.on("entree",(data)=>{
-        console.log(data.name);
+        joueurs.push(data);
+        let max=3
+        let x;
+        while(terrain.eau>0 && terrain.prairie>0 && terrain.roche>0){
+            x= Math.floor(Math.random()*max);
+            if(terrain[typeTerrain[x]]==0){
+                typeTerrain.pop
+            }else{
+
+            }
+        }
+
+    
+        
     });
 
     // hex
