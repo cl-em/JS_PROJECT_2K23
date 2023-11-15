@@ -1,6 +1,5 @@
 body{
-    background-color: aquamarine;
-
+    background-image: url('lol.png');
 }
 
 .main{
@@ -13,4 +12,19 @@ body{
 
 .damier{
     text-align: center;
+}
+
+#tablier{
+    margin:10px;
+    width:625px;
+    background: transparent;
+    height:490px;
+    text-align:center;
+    border-radius:50px;
+    border: 2px solid;
+}
+
+.init{
+    text-align: center;
+    margin:70px;
 }

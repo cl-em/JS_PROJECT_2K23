@@ -14,10 +14,10 @@
     <title>Document</title>
 </head>
 <body>
-    <div class="main">
+    <div class="grid text-center" style="--bs-rows: 3; --bs-columns: 3;">
     <!-- les trucs pour initialisé la parti (pseudo, stats) -->
-    <div class="initial">
-        <h1>__init__</h1>
+    <div class="init">
+        <p>Veuillez saisir votre username, ainsi que vos statistiques!</p>
         <input type="text"  id="name">
         <input type="button" value="entree" onclick="entree()">
         <input type="button" value="sortie">
@@ -32,21 +32,23 @@
     </div>
 
     <!-- damier  -->
-    <div class="damier">
-        <h1>Jeu</h1>
-        <div id="tablier"></div>
-    </div>
+        <div class="damier">
+            <svg id="tablier"></svg>
+        </div>
 
     <!-- boite de dialogue (c'est pas demandé mais il est là) -->
-    <div class="chat">
+    <!--<div class="chat">
         <h1>Chat</h1>
         <input type="text"  id="message">
         <input type="button" value="envoyer" onclick="message()">
         <p id="chat">
 
         </p>
+    </div>  
+    -->
     </div>
-    </div>
+
+    
     
     
     <script src="http://localhost:8888/socket" ></script>
