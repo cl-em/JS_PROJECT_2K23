@@ -2,7 +2,7 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-//const io =  require("socket.io")(server); // bun
+// const io =  require("socket.io")(server); // bun
 const io = new require("socket.io")(server); // node.js
 
 // declare toutes tes variables avec 'let' stp 
@@ -30,6 +30,10 @@ app.get("/hex",(request,response)=>{
 
 app.get("/css",(request,response)=>{
     response.sendFile("./style.css",{root:__dirname});
+});
+
+app.get("/bg",(request,response)=>{
+    response.sendFile("./lol.png",{root:__dirname});
 });
 
 let joueurs=[];
