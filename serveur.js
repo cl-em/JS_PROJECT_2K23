@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-// const io =  require("socket.io")(server); // bun
-const io = new require("socket.io")(server); // node.js
+const io =  require("socket.io")(server); // bun
+// const io = new require("socket.io")(server); // node.js
 
 // declare toutes tes variables avec 'let' stp 
 // 'var' c'est pareil mais en moins bien
@@ -20,20 +20,17 @@ app.get('/', (request, response) => {
     response.sendFile('index.html', {root: __dirname});
 });
 
-app.get("/socket", (request,response)=>{
-    response.sendFile("./socket.js",{root:__dirname});
-});
+let fileList = ["hex.js",
+"index.html",
+"lol.png",
+"socket.js",
+"style.css"];
 
-app.get("/hex",(request,response)=>{
-    response.sendFile("./hex.js",{root:__dirname});
-})
-
-app.get("/css",(request,response)=>{
-    response.sendFile("./style.css",{root:__dirname});
-});
-
-app.get("/bg",(request,response)=>{
-    response.sendFile("./lol.png",{root:__dirname});
+app.get("/:nomFichier",(request,response)=>{
+    let file = request.params.nomFichier;
+    if(fileList.includes(file)){
+        response.sendFile(file,{root:__dirname});
+    }
 });
 
 let joueurs=[];
@@ -44,33 +41,38 @@ let typeTerrain = ["roche","prairie","eau"];
 
 // socket
 io.on("connection",(socket)=>{
+
+    socket.on("auchargement",()=>{
+        if(cases.length!=0){
+            socket.emit("entree",cases);
+        }
+    });
+
     socket.on("entree",(data)=>{
         joueurs.push(data);
-        let max=3
-        let x;
-        while(terrain.eau>0 && terrain.prairie>0 && terrain.roche>0){
-            x= Math.floor(Math.random()*max);
-            if(terrain[typeTerrain[x]]==0){
-                typeTerrain.pop
-            }else{
-
+        console.log(data);
+        if(cases.length==0){
+            let max=3;
+            let x;
+            let id=0;
+            while(terrain.eau>0 || terrain.prairie>0 || terrain.roche>0){
+                x= Math.floor(Math.random()*max);
+                if(terrain[typeTerrain[x]]==0){
+                    typeTerrain.splice(typeTerrain.indexOf(typeTerrain[x]),1);
+                    --max;
+                }else{
+                    cases.push(["h"+id,typeTerrain[x]]);
+                    terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
+                    ++id;
+                }
             }
+            socket.emit("entree",cases);
+        }else{
+            console.log("bah ca marche pas");
         }
-
-    
-        
-    });
-
-    // hex
-    socket.on("auchargement",()=>{
     });
     
-    socket.on("oncarre",data=>{
-        carreclick.push(data);
-        io.emit("oncarre",data);
-    })
-
-    // message
+    // message 
     socket.on("message",(data)=>{
         // messages.push(data);
         console.log(data.text);

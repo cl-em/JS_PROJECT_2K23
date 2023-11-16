@@ -38,18 +38,6 @@ function creerTablier(nblignes,nbcolonnes){
             .attr("d",d)
             .attr("stroke","black").attr("fill","white")
             .attr("id","h"+(ligne*nblignes+colonne));
-            /* .on("click",function(){
-                let hexagoneId = d3.select(this).attr("id");
-                // if(d3.select(this).attr("fill")=="white"){
-                //     d3.select("#" + hexagoneId).attr("fill", "blue");
-
-                // }else{
-                //     d3.select("#" + hexagoneId).attr("fill", "white");
-                // }
-                
-                socket.emit("oncarre",hexagoneId);
-
-            });*/
         }
     }
 }
@@ -63,11 +51,3 @@ creerTablier(13,13);
 
 // let socket = io();
 socket.emit("auchargement");
-
-socket.on("oncarre",data=>{
-    d3.select("#" + data).attr("fill", "blue");
-});
-
-socket.on("auchargement",(data)=>{
-    
-});

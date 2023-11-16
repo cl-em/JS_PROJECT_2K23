@@ -1,3 +1,15 @@
+si t'ajoute des fichiers pour le client ajoute le nom du fichier dans la variables "fileList" de serveur.js
+c'est une histoire de sécurité pour évité au client d'accèder à n'importe quel fichiers
+
+l'url du ficher c'est http://localhost:8888/nomFichier
+
+gérer la sortie des joueurs 
+faires les stats 
+
+faires les animaux, gestion du tour par tour coté serveur io.emit partout 
+
+
+
 client (html): 
 invoque ajax, d3js, socket(localement /socket.io/socket.io.js)
 

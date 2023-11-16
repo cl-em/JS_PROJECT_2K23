@@ -1,5 +1,5 @@
 body{
-    background-image: url('http://localhost/bg');
+    background-image: url('http://localhost:8888/lol.png');
 }
 
 .main{
@@ -27,4 +27,5 @@ body{
 .init{
     text-align: center;
     margin:70px;
+
 }

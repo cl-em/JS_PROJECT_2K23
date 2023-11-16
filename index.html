@@ -5,7 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link href="http://localhost:8888/css" rel="stylesheet" >
+    <link href="http://localhost:8888/style.css" rel="stylesheet" >
 
 
     <script src="https://d3js.org/d3.v5.min.js"></script>
@@ -17,7 +17,7 @@
     <div class="grid text-center" style="--bs-rows: 3; --bs-columns: 3;">
     <!-- les trucs pour initialisé la parti (pseudo, stats) -->
     <div class="init">
-        <p>Veuillez saisir votre username, ainsi que vos statistiques!</p>
+        <p id="veuillez">Veuillez saisir votre username, ainsi que vos statistiques!</p>
         <input type="text"  id="name">
         <input type="button" value="entree" onclick="entree()">
         <input type="button" value="sortie">
@@ -25,7 +25,7 @@
         <br>
         <input type="number"  id="repro" placeholder="taux reproduction" max="5" min="0" >
         <br>
-        <input type="number" id="percep" placeholder="perception" max="5"  min="0" >
+        <input type="number" id="percep" placeholder="perception"  min="0" max="5">
         <br>
         <input type="number"  id="force" placeholder="force" max="5" min="0" >
         <br>
@@ -51,7 +51,7 @@
     
     
     
-    <script src="http://localhost:8888/socket" ></script>
-    <script src="http://localhost:8888/hex"></script>
+    <script src="http://localhost:8888/socket.js" ></script>
+    <script src="http://localhost:8888/hex.js"></script>
 </body>
 </html>

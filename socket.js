@@ -31,3 +31,10 @@ socket.on("message",(data)=>{
     }   
 });
 
+let colors = {"roche":"#AAAAAA","prairie":"#86DC3D","eau":"#1AA7EC"}
+socket.on("entree",(data)=>{
+    data.forEach(element => {
+        d3.select("#"+element[0]).attr("fill",colors[element[1]]);
+    });
+});
+
