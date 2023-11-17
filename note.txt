@@ -8,6 +8,8 @@ faires les stats
 
 faires les animaux, gestion du tour par tour coté serveur io.emit partout 
 
+faire que les hex, le damier et le contour soit responsive
+(change de taille en fonction de la taille de l'écran)
 
 
 client (html): 

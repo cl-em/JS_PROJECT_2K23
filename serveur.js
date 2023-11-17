@@ -36,6 +36,7 @@ app.get("/:nomFichier",(request,response)=>{
 let joueurs=[];
 
 let cases=[];
+
 let terrain = {"roche":84,"prairie": 59,"eau":26};
 let typeTerrain = ["roche","prairie","eau"];
 
@@ -52,7 +53,7 @@ io.on("connection",(socket)=>{
         joueurs.push(data);
         console.log(data);
         if(cases.length==0){
-            let max=3;
+            let max=typeTerrain.length;
             let x;
             let id=0;
             while(terrain.eau>0 || terrain.prairie>0 || terrain.roche>0){

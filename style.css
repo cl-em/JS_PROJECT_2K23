@@ -1,5 +1,8 @@
 body{
     background-image: url('http://localhost:8888/lol.png');
+    background-repeat: no-repeat;
+    background-size: cover;
+
 }
 
 .main{
