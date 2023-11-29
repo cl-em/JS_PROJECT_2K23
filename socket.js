@@ -31,10 +31,28 @@ socket.on("message",(data)=>{
     }   
 });
 
+let joueurs;
+let animaux;
+
+socket.on("getJoueurs",(data)=>{
+    joueurs=data;
+})
+
 let colors = {"roche":"#AAAAAA","prairie":"#86DC3D","eau":"#1AA7EC"}
-socket.on("entree",(data)=>{
-    data.forEach(element => {
+socket.on("entree",(cases)=>{
+    cases.forEach(element => {
         d3.select("#"+element[0]).attr("fill",colors[element[1]]);
     });
 });
 
+socket.on("commencerJeu",(data)=>{
+    animaux = data;
+});
+
+socket.on("jouerTour",(data)=>{
+    joueurs.forEach((value)=>{
+        data[value.name].forEach((animal)=>{
+            d3.select("#"+animal.position).attr("fill","red");
+        });
+    });
+});

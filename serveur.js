@@ -8,6 +8,8 @@ const io =  require("socket.io")(server); // bun
 // declare toutes tes variables avec 'let' stp 
 // 'var' c'est pareil mais en moins bien
 
+import {Animal} from "./animaux.js";
+let a = new Animal();
 
 // app get
 
@@ -24,6 +26,7 @@ let fileList = ["hex.js",
 "index.html",
 "lol.png",
 "socket.js",
+"animaux.js",
 "style.css"];
 
 app.get("/:nomFichier",(request,response)=>{
@@ -34,6 +37,7 @@ app.get("/:nomFichier",(request,response)=>{
 });
 
 let joueurs=[];
+// liste d'objet de type {name,repro,precep,force}
 
 let cases=[];
 
@@ -45,13 +49,13 @@ io.on("connection",(socket)=>{
 
     socket.on("auchargement",()=>{
         if(cases.length!=0){
-            socket.emit("entree",cases);
+            socket.emit("entree",cases,joueurs);
         }
     });
 
     socket.on("entree",(data)=>{
         joueurs.push(data);
-        console.log(data);
+
         if(cases.length==0){
             let max=typeTerrain.length;
             let x;
@@ -68,9 +72,13 @@ io.on("connection",(socket)=>{
                 }
             }
             socket.emit("entree",cases);
-        }else{
-            console.log("bah ca marche pas");
         }
+        io.emit("getJoueurs",joueurs);
+        commencerJeu();
+        jouerTour();
+        
+
+       
     });
     
     // message 
@@ -81,6 +89,56 @@ io.on("connection",(socket)=>{
         io.emit("message",data);
     })
 
+
+
+
+
+    let animaux = {};
+
+    const commencerJeu = ()=>{
+        joueurs.forEach((value,index)=>{
+            animaux[value.name]=[];
+            for(let i=0;i<10;++i){
+                animaux[value.name].push(new Animal());
+            }
+        });
+        io.emit("commencerJeu",animaux);
+    }
+
+    const jouerTour = () =>{
+        let choix;
+        joueurs.forEach((value,index)=>{
+        animaux[value.name].forEach((animal)=>{
+            choix= Math.floor(Math.random()*7)+1;
+            
+            switch(choix){
+                case 2 : 
+                    animal.position+=-13-1;
+                case 3 : 
+                    animal.position+=-13;
+                case 4: 
+                    animal.position+=-1;
+                case 5: 
+                    animal.position+=1;
+                case 6: 
+                    animal.position+=13-1;
+                case 7 :
+                    animal.position +=13;
+                default:
+                    if(choix!=0){
+                        animal.stats.eau-=1;
+                        animal.stats.faim-=0.50;
+                    }else{
+                        animal.stats.eau-=0.5;
+                        animal.stats.faim-=0.25;
+                    }
+                }
+
+            });
+        });
+
+        io.emit("jouerTour",animaux);
+    }
 
 
 });

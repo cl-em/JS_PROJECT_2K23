@@ -6,33 +6,16 @@ l'url du ficher c'est http://localhost:8888/nomFichier
 gérer la sortie des joueurs 
 faires les stats 
 
+forcer le client a entrer des stats (max : 15 points)
+tout refaire en vrai ?
+
 faires les animaux, gestion du tour par tour coté serveur io.emit partout 
+on peut construire les animaux coté serveur et eenvoyer uniquement 
+les positions des animaux aux clients 
 
-faire que les hex, le damier et le contour soit responsive
-(change de taille en fonction de la taille de l'écran)
+(faire que les hex, le damier et le contour soit responsive
+(change de taille en fonction de la taille de l'écran))
 
-
-client (html): 
-invoque ajax, d3js, socket(localement /socket.io/socket.io.js)
-
-script js (je prefere le faire dans un fichier apart)
-let socket = io();
-
-id=message appelle fun envoiMessage qui appelle une fonction soket.io
-socket.emit(nom méthode,arguement);
-
-dans le client resoit dans la socket.on 
-une reponse du serveur
-
-le serveur renvoit une reponse avec io.emit(nom méthode client, arguement)
-
-(coté serveur)
-socket.emit envoi a un seul client
-io.emit envoie a tous les client
-
-
-
-13*13 tablier, hexagone tanieres, 15% eau 35% prairie 50% rocher
 
 taux hydratation
 taux satiété : de 0 a 10
@@ -50,7 +33,4 @@ case eau : 25.35 -> 26
 case prairi : 59.15 -> 59
 case roche : 84.5 -> 84
 
-salut kyky
-
-c'est un test gros 
-y a des trucs nouveau dans le html 
+nombre aléatoire entre 1 et 7 inclue si 1 alors pas bouger sinon deplacement
