@@ -23,6 +23,10 @@ function message(){
     msg.innerText="";
 }
 
+function commencerJeu(){
+    socket.emit("commencerJeu");
+}
+
 socket.on("message",(data)=>{
     if(data.text.endsWith(".gif")){
         chat.innerHTML+="<p>"+data.auteur+"</p>"+`<img src="${data.text}" width="100" height=100/>`
@@ -47,12 +51,19 @@ socket.on("entree",(cases)=>{
 
 socket.on("commencerJeu",(data)=>{
     animaux = data;
+
+    joueurs.forEach((value)=>{
+        data[value.name].forEach((animal)=>{
+            d3.select("#h"+animal.position).attr("fill","red");
+        });
+    });
+
 });
 
 socket.on("jouerTour",(data)=>{
     joueurs.forEach((value)=>{
         data[value.name].forEach((animal)=>{
-            d3.select("#"+animal.position).attr("fill","red");
+            d3.select("#h"+animal.position).attr("fill","red");
         });
     });
 });

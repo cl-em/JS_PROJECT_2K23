@@ -15,6 +15,7 @@ les positions des animaux aux clients
 
 (faire que les hex, le damier et le contour soit responsive
 (change de taille en fonction de la taille de l'écran))
+faire en sorte d'avoir une meilleur répartition du terrain
 
 
 taux hydratation

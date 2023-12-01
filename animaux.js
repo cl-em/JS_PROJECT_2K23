@@ -1,7 +1,7 @@
 export class Animal{
-    constructor(){
+    constructor(p){
         this.sexe=false; //est ce vraiment necessaire
-        this.position=0;
+        this.position=p;
         this.stats={eau:10,faim:10};
     }
 
