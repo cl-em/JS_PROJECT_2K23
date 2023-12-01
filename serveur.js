@@ -82,8 +82,8 @@ io.on("connection",(socket)=>{
                     ++id;
                 }
             }
-            socket.emit("entree",cases);
         }
+        socket.emit("entree",cases);
         io.emit("getJoueurs",joueurs);
     });
     

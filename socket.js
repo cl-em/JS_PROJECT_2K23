@@ -37,13 +37,20 @@ socket.on("message",(data)=>{
 
 let joueurs;
 let animaux;
+let damier;
 
 socket.on("getJoueurs",(data)=>{
     joueurs=data;
 })
 
 let colors = {"roche":"#AAAAAA","prairie":"#86DC3D","eau":"#1AA7EC"}
+const resetDamier = () =>{
+    damier.forEach(element=>{
+        d3.select("#"+element[0]).attr("fill",colors[element[1]]);
+    });
+}
 socket.on("entree",(cases)=>{
+    damier = cases;
     cases.forEach(element => {
         d3.select("#"+element[0]).attr("fill",colors[element[1]]);
     });
@@ -51,6 +58,8 @@ socket.on("entree",(cases)=>{
 
 socket.on("commencerJeu",(data)=>{
     animaux = data;
+
+    resetDamier();
 
     joueurs.forEach((value)=>{
         data[value.name].forEach((animal)=>{
@@ -61,6 +70,9 @@ socket.on("commencerJeu",(data)=>{
 });
 
 socket.on("jouerTour",(data)=>{
+
+    resetDamier();
+    animaux = data;
     joueurs.forEach((value)=>{
         data[value.name].forEach((animal)=>{
             d3.select("#h"+animal.position).attr("fill","red");
