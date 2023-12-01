@@ -2,13 +2,24 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-const io =  require("socket.io")(server); // bun
-// const io = new require("socket.io")(server); // node.js
+// const io =  require("socket.io")(server); // bun
+const io = new require("socket.io")(server); // node.js
 
 // declare toutes tes variables avec 'let' stp 
 // 'var' c'est pareil mais en moins bien
 
-import {Animal} from "./animaux.js";
+class Animal{
+    constructor(p){
+        this.sexe=false; //est ce vraiment necessaire
+        this.position=p;
+        this.stats={eau:10,faim:10};
+    }
+
+    enVie(){
+        return !(this.stats.eau==0 || this.stats.faim==10)
+    }   
+}
+
 let a = new Animal();
 
 // app get

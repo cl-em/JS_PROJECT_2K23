@@ -1,4 +1,4 @@
-export class Animal{
+class Animal{
     constructor(p){
         this.sexe=false; //est ce vraiment necessaire
         this.position=p;
