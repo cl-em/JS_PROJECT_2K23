@@ -99,6 +99,8 @@ io.on("connection",(socket)=>{
             }
         });
         io.emit("commencerJeu",animaux);
+
+        //deroulement du jeu
         for(let i=0;i<10;++i){
             jouerTour();
             await sleep(500);
@@ -130,19 +132,22 @@ io.on("connection",(socket)=>{
                     case 7 :
                         animal.position +=13;
                     default:
-                        if(choix!=0){
+                        // verifie si l'animal est bien dans le plateau 
+                        // soustraction des attribut en fonction du mouvement
+                        if(choix!=0 && animal.position>=0 && animal.position<=168 && animal.position%13!=0 && animal.position%13!=12){
                             animal.stats.eau-=1;
                             animal.stats.faim-=0.50;
                         }else{
                             animal.stats.eau-=0.5;
                             animal.stats.faim-=0.25;
+
+                            // replace l'animal dans le damier
+                            if(animal.position<0)
+                                animal.position=0;
+                            else if(animal.position>168) animal.position=168;
+                        
                         }
                 }
-
-                if(animal.position <0){
-                    animal.position=0;
-                }
-
             });
         });
 

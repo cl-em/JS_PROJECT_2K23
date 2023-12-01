@@ -13,6 +13,9 @@ faires les animaux, gestion du tour par tour coté serveur io.emit partout
 on peut construire les animaux coté serveur et eenvoyer uniquement 
 les positions des animaux aux clients 
 
+les animaux qui sont sur les bords peuvent  aller à l'opposé du terrain 
+
+
 (faire que les hex, le damier et le contour soit responsive
 (change de taille en fonction de la taille de l'écran))
 faire en sorte d'avoir une meilleur répartition du terrain
