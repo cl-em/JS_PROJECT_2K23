@@ -84,3 +84,7 @@ socket.on("jouerTour",(data)=>{
         });
     });
 });
+
+socket.on("animaux",(data)=>{
+    animaux = data;
+})

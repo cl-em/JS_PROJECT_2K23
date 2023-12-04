@@ -2,8 +2,8 @@ const express = require('express');
 const app = express();
 const http = require('http');
 const server = http.createServer(app);
-// const io =  require("socket.io")(server); // bun
-const io = new require("socket.io")(server); // node.js
+const io =  require("socket.io")(server); // bun
+// const io = new require("socket.io")(server); // node.js
 
 class Animal{
     constructor(p){
@@ -16,8 +16,6 @@ class Animal{
         return !(this.stats.eau==0 || this.stats.faim==10)
     }   
 }
-
-let a = new Animal();
 
 // app get
 
@@ -114,7 +112,7 @@ io.on("connection",(socket)=>{
     async function commencerJeu (){
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
-            for(let i=0;i<1;++i){
+            for(let i=0;i<10;++i){
                 animaux[value.name].push(new Animal(position[index]));
             }
         });
@@ -123,6 +121,14 @@ io.on("connection",(socket)=>{
         //deroulement du jeu
         for(let i=0;i<50;++i){
             jouerTour();
+            joueurs.forEach((joueur,index)=>{
+                animaux[joueur.name].forEach((animal,index)=>{
+                    if(!animal.enVie()){
+                        animaux[joueur.name].splice(index,1);
+                    }
+                });
+            });
+
             await sleep(750);
         }
     }
@@ -131,49 +137,6 @@ io.on("connection",(socket)=>{
             setTimeout(resolve, ms);
         });
     }
-
-    /*
-    const jouerTour = () =>{
-        let choix;
-        joueurs.forEach((value,index)=>{
-            animaux[value.name].forEach((animal)=>{
-                choix= Math.floor(Math.random()*7)+1;
-                
-                switch(choix){
-                    case 2 : 
-                        animal.position+=-13-1;
-                    case 3 : 
-                        animal.position+=-13;
-                    case 4: 
-                        animal.position+=-1;
-                    case 5: 
-                        animal.position+=1;
-                    case 6: 
-                        animal.position+=13-1;
-                    case 7 :
-                        animal.position +=13;
-                    default:
-                        // verifie si l'animal est bien dans le plateau 
-                        // soustraction des attribut en fonction du mouvement
-                        if(choix!=0 && animal.position>=0 && animal.position<=168 && animal.position%13!=0 && animal.position%13!=12){
-                            animal.stats.eau-=1;
-                            animal.stats.faim-=0.50;
-                        }else{
-                            animal.stats.eau-=0.5;
-                            animal.stats.faim-=0.25;
-
-                            // replace l'animal dans le damier
-                            if(animal.position<0)
-                                animal.position=0;
-                            else if(animal.position>168) animal.position=168;
-                        
-                        }
-                }
-            });
-        });
-
-        io.emit("jouerTour",animaux);
-    }*/
 
     function jouerTour() {
     const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index);
