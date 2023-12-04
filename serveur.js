@@ -132,49 +132,6 @@ io.on("connection",(socket)=>{
         });
     }
 
-    /*
-    const jouerTour = () =>{
-        let choix;
-        joueurs.forEach((value,index)=>{
-            animaux[value.name].forEach((animal)=>{
-                choix= Math.floor(Math.random()*7)+1;
-                
-                switch(choix){
-                    case 2 : 
-                        animal.position+=-13-1;
-                    case 3 : 
-                        animal.position+=-13;
-                    case 4: 
-                        animal.position+=-1;
-                    case 5: 
-                        animal.position+=1;
-                    case 6: 
-                        animal.position+=13-1;
-                    case 7 :
-                        animal.position +=13;
-                    default:
-                        // verifie si l'animal est bien dans le plateau 
-                        // soustraction des attribut en fonction du mouvement
-                        if(choix!=0 && animal.position>=0 && animal.position<=168 && animal.position%13!=0 && animal.position%13!=12){
-                            animal.stats.eau-=1;
-                            animal.stats.faim-=0.50;
-                        }else{
-                            animal.stats.eau-=0.5;
-                            animal.stats.faim-=0.25;
-
-                            // replace l'animal dans le damier
-                            if(animal.position<0)
-                                animal.position=0;
-                            else if(animal.position>168) animal.position=168;
-                        
-                        }
-                }
-            });
-        });
-
-        io.emit("jouerTour",animaux);
-    }*/
-
     function jouerTour() {
     const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index);
     const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index);
