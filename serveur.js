@@ -57,7 +57,6 @@ let typeTerrain = ["roche","prairie","eau"];
 
 // socket
 io.on("connection",(socket)=>{
-
     socket.on("auchargement",()=>{
         if(cases.length!=0){
             socket.emit("entree",cases,joueurs);
@@ -70,16 +69,36 @@ io.on("connection",(socket)=>{
         if(cases.length==0){
             let max=typeTerrain.length;
             let x;
-            let id=0;
+            let id1 = 0;
+            let id2 = 168;
+            let id3 = 78;
+            let id4 = 90;
+            let y = 0;
+
             while(terrain.eau>0 || terrain.prairie>0 || terrain.roche>0){
                 x= Math.floor(Math.random()*max);
                 if(terrain[typeTerrain[x]]==0){
                     typeTerrain.splice(typeTerrain.indexOf(typeTerrain[x]),1);
                     --max;
                 }else{
-                    cases.push(["h"+id,typeTerrain[x]]);
-                    terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
-                    ++id;
+                    if(y <= 13){
+                        cases.push(["h"+id3,typeTerrain[x]]);
+                        terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
+                        ++id3; 
+                        ++y;
+                    };
+                    if(y%2 == 0){
+                        cases.push(["h"+id1,typeTerrain[x]]);
+                        terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
+                        ++id1; 
+                        ++y;
+                    }
+                    else{
+                        cases.push(["h"+id2,typeTerrain[x]]);
+                        terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
+                        --id2; 
+                        ++y;
+                    }
                 }
             }
         }
@@ -119,7 +138,7 @@ io.on("connection",(socket)=>{
     }
     function sleep(ms) {
         return new Promise((resolve) => {
-          setTimeout(resolve, ms);
+            setTimeout(resolve, ms);
         });
     }
 

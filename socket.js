@@ -2,10 +2,10 @@
 let socket = io();
 
 // init
-let nom = document.getElementById("name")
-let repro = document.getElementById("repro");
-let precep = document.getElementById("percep");
-let force = document.getElementById("force");
+let nom = document.getElementById("name");
+let repro = document.getElementById("nbr1");
+let precep = document.getElementById("nbr2");
+let force = document.getElementById("nbr3");
 
 //chat
 let msg = document.getElementById("message");
@@ -13,8 +13,13 @@ let chat = document.getElementById("chat");
 
 function entree(){
     let joueur = {name: nom.value,repro:repro.value,precep: precep.value,force:force.value};
-
+    document.getElementById('messageConnexion').textContent = "Connecté en tant que " + nom.value;
     socket.emit("entree",joueur);
+}
+
+function sortie(){
+    document.getElementById('messageConnexion').textContent = '';
+    socket.emit("sortie");
 }
 
 function message(){

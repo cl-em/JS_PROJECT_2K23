@@ -2,7 +2,7 @@ body{
     background-image: url('http://localhost:8888/lol.png');
     background-repeat: no-repeat;
     background-size: cover;
-
+    overflow: hidden;
 }
 
 .main{
@@ -34,3 +34,28 @@ body{
     margin:70px;
 
 }
+
+#sub1, #sub2, #sub3, #add1, #add2, #add3 {
+    box-shadow: 0 0 5px black, 0 0 25px black;
+    border-radius: 50%;
+}
+
+#nbr1, #nbr2, #nbr3 {
+    border-radius: 50%;
+    width: 1.5em;
+    height: 2em;
+    text-align: center;
+    line-height: 2em;
+}
+
+#messageConnexion {
+    color: green;
+}
+
+#t1 {
+    display: inline-block;
+    width: 100px; /* Ajustez la largeur selon vos besoins */
+    text-align: center;
+    margin-right: 10px; /* Ajustez la marge selon vos besoins */
+}
+

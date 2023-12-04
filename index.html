@@ -11,26 +11,47 @@
     <script src="https://d3js.org/d3.v5.min.js"></script>
     <script src="/socket.io/socket.io.js"></script>
 
-    <title>Document</title>
+    <title>Projet JS</title>
 </head>
 <body>
+
+    <p><span id="messageConnexion"></span></p>
+
     <div class="grid text-center" style="--bs-rows: 3; --bs-columns: 3;">
     <!-- les trucs pour initialisé la parti (pseudo, stats) -->
     <div class="init">
         <p id="veuillez">Veuillez saisir votre username, ainsi que vos statistiques!</p>
         <input type="text"  id="name">
-        <input type="button" value="entree" onclick="entree()">
-        <input type="button" value="sortie">
+        <input type="button" value="Connexion" onclick="entree()">
+        <input type="button" value="Déconnexion" onclick="sortie()">
 
         <br>
-        <input type="number"  id="repro" placeholder="taux reproduction" max="5" min="0" >
+        
+        <p><span id="ptsstats"></span></p>
+
+        <!-- No1 -->
+        <span id="t1">Reproduction</span> <button id="sub1">-</button>
+        <input type="text" id="nbr1" readonly="" value="0">
+        <button id="add1">+</button>
+        
         <br>
-        <input type="number" id="percep" placeholder="perception"  min="0" max="5">
+        
+        <!-- No2 -->
+        <span id="t1">Perception</span> <button id="sub2">-</button>
+        <input type="text" id="nbr2" readonly="" value="0">
+        <button id="add2">+</button>
+        
         <br>
-        <input type="number"  id="force" placeholder="force" max="5" min="0" >
+        
+        <!-- No3 -->
+        <span id="t1">Force</span> <button id="sub3">-</button>
+        <input type="text" id="nbr3" readonly="" value="0">
+        <button id="add3">+</button>
+        
+        <br>
         <br>
 
-        <input type="button" value="Commencer Jeu" onclick="commencerJeu()">
+        <input type="button" value="Commencer le jeu" onclick="commencerJeu()">
     </div>
 
     <!-- damier  -->
@@ -56,4 +77,64 @@
     <script src="http://localhost:8888/socket.js" ></script>
     <script src="http://localhost:8888/hex.js"></script>
 </body>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    resetInputValues();
+});
+
+function resetInputValues() {
+    nbrS.forEach((input) => {
+        input.value = '0';
+    });
+    document.getElementById('name').value = '';
+    PTSSTATS = 15;
+    updateStats();
+}
+
+
+let PTSSTATS = 15;
+
+function updateStats() {
+    if(PTSSTATS>0){
+        document.getElementById('ptsstats').textContent = "Il vous reste " + PTSSTATS + " points de statistiques à distribuer!";
+    }
+    else{
+        document.getElementById('ptsstats').textContent = "Il ne vous reste plus aucun points à distribuer";
+    }
+    }
+    
+
+let addS = [];
+let subS = [];
+let nbrS = [];
+
+for(let i=1;i<4;++i){
+    addS.push(document.getElementById("add"+i));
+    subS.push(document.getElementById("sub"+i));
+    nbrS.push(document.getElementById("nbr"+i));
+}
+
+addS.forEach((element,index)=>{
+    element.addEventListener("click",()=>{
+        if(PTSSTATS>0 && parseInt(nbrS[index].value)<10){
+        nbrS[index].value = parseInt(nbrS[index].value) + 1;
+        PTSSTATS--;
+        updateStats();
+        }
+    });
+});
+
+subS.forEach((element,index)=>{
+    element.addEventListener("click",()=>{
+        if((parseInt(nbrS[index].value) - 1)>=0){
+        nbrS[index].value = parseInt(nbrS[index].value) - 1;
+        PTSSTATS++;
+        updateStats();
+    }
+    })
+});
+
+updateStats();
+</script>
 </html>
