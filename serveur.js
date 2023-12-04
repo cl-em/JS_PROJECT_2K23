@@ -114,16 +114,16 @@ io.on("connection",(socket)=>{
     async function commencerJeu (){
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
-            for(let i=0;i<10;++i){
+            for(let i=0;i<1;++i){
                 animaux[value.name].push(new Animal(position[index]));
             }
         });
         io.emit("commencerJeu",animaux);
 
         //deroulement du jeu
-        for(let i=0;i<10;++i){
+        for(let i=0;i<50;++i){
             jouerTour();
-            await sleep(500);
+            await sleep(750);
         }
     }
     function sleep(ms) {
@@ -132,6 +132,7 @@ io.on("connection",(socket)=>{
         });
     }
 
+    /*
     const jouerTour = () =>{
         let choix;
         joueurs.forEach((value,index)=>{
@@ -172,6 +173,72 @@ io.on("connection",(socket)=>{
         });
 
         io.emit("jouerTour",animaux);
+    }*/
+
+    function jouerTour() {
+    const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index);
+    const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index);
+
+        joueurs.forEach((value, index) => {
+            if (animaux[value.name]) {
+                animaux[value.name].forEach((animal) => {
+                    let choix = Math.floor(Math.random() * 7);
+    
+                    switch (choix) {
+                        case 1: //Cas ou il se déplace en haut a gauche.
+                            if ((animal.position -13) > 0 && (!bordureG.includes(animal.position))) {
+                                animal.position = animal.position -13;
+                                animal.stats.eau -= 1;
+                                animal.stats.faim -= 0.50;
+                                break;
+                            }
+                        case 2: //Cas ou il se déplace en haut a droite.
+                            if ((animal.position -12) > 0 && (!bordureD.includes(animal.position))) {
+                                animal.position = animal.position -12;
+                                animal.stats.eau -= 1;
+                                animal.stats.faim -= 0.50;
+                                break;
+                            }
+                        case 3: //Cas ou il se déplace vers la gauche.
+                            if ((!bordureG.includes(animal.position))) {
+                                animal.position = animal.position -1;
+                                animal.stats.eau -= 1;
+                                animal.stats.faim -= 0.50;
+                                break;
+                            }
+                        case 4: //Cas ou il se déplace vers la droite.
+                            if ((!bordureD.includes(animal.position))) {
+                                animal.position = animal.position + 1;
+                                animal.stats.eau -= 1;
+                                animal.stats.faim -= 0.50;
+                                break;
+                            }
+                        case 5: //Cas ou il se déplace en bas a droite.
+                            if ((animal.position + 14) < 168 && (!bordureD.includes(animal.position))) {
+                                animal.position = animal.position + 14;
+                                animal.stats.eau -= 1;
+                                animal.stats.faim -= 0.50;
+                                break;
+                            }
+                        case 6: //Cas ou il se déplace en bas a gauche.
+                            if ((animal.position + 13) < 168 && (!bordureG.includes(animal.position))) {
+                                animal.position = animal.position + 13;
+                                animal.stats.eau -= 1;
+                                animal.stats.faim -= 0.50;
+                                break;
+                            }
+                        default:
+                            animal.position = animal.position //Cas ou il reste sur place
+                            animal.stats.eau -= 0.5;
+                            animal.stats.faim -= 0.25;
+                            break;
+                    }
+                });
+            } else {
+                console.log("animaux[value.name] est pas dÃ©fini");
+            }
+        });
+        io.emit("jouerTour", animaux);
     }
 
     socket.on("commencerJeu",commencerJeu);
