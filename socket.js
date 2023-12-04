@@ -19,7 +19,8 @@ function entree(){
 
 function sortie(){
     document.getElementById('messageConnexion').textContent = '';
-    socket.emit("sortie");
+    socket.emit("sortie",nom.value);
+    nom.value="";
 }
 
 function message(){
@@ -64,13 +65,13 @@ socket.on("entree",(cases)=>{
 socket.on("commencerJeu",(data)=>{
     animaux = data;
 
-    resetDamier();
+    // resetDamier();
 
-    joueurs.forEach((value)=>{
-        data[value.name].forEach((animal)=>{
-            d3.select("#h"+animal.position).attr("fill","red");
-        });
-    });
+    // joueurs.forEach((value)=>{
+    //     data[value.name].forEach((animal)=>{
+    //         d3.select("#h"+animal.position).attr("fill","red");
+    //     });
+    // });
 
 });
 
@@ -84,7 +85,3 @@ socket.on("jouerTour",(data)=>{
         });
     });
 });
-
-socket.on("animaux",(data)=>{
-    animaux = data;
-})

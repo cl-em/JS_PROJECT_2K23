@@ -97,6 +97,19 @@ io.on("connection",(socket)=>{
         socket.emit("entree",cases);
         io.emit("getJoueurs",joueurs);
     });
+
+
+    socket.on("sortie",nomASupprimer=>{
+        let newJoueurs=[];
+        joueurs.forEach(joueur=>{
+            if(joueur.name!=nomASupprimer)
+                newJoueurs.push(joueur);
+        });
+        joueurs=newJoueurs;
+        io.emit("getJoueurs",joueurs);
+        
+    });
+
     
     // message 
     socket.on("message",(data)=>{
