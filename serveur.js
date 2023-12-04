@@ -5,9 +5,6 @@ const server = http.createServer(app);
 // const io =  require("socket.io")(server); // bun
 const io = new require("socket.io")(server); // node.js
 
-// declare toutes tes variables avec 'let' stp 
-// 'var' c'est pareil mais en moins bien
-
 class Animal{
     constructor(p){
         this.sexe=false; //est ce vraiment necessaire
@@ -66,42 +63,39 @@ io.on("connection",(socket)=>{
     socket.on("entree",(data)=>{
         joueurs.push(data);
 
+        let listec = [];
+        for(let i=0; i<=168; i++){
+            listec.push(i);
+        }
+
+        function listecElemRndm(){
+            if (listec.length > 0){
+                let rndm = Math.floor(Math.random() * listec.length);
+                let elem = listec[rndm];
+                listec.splice(rndm, 1);
+                return elem;
+            } 
+        }
+
         if(cases.length==0){
-            let max=typeTerrain.length;
-            let x;
-            let id1 = 0;
-            let id2 = 168;
-            let id3 = 78;
-            let id4 = 90;
-            let y = 0;
+
+            let max = typeTerrain.length;
+            let rndmTerrain;
 
             while(terrain.eau>0 || terrain.prairie>0 || terrain.roche>0){
                 x= Math.floor(Math.random()*max);
                 if(terrain[typeTerrain[x]]==0){
                     typeTerrain.splice(typeTerrain.indexOf(typeTerrain[x]),1);
                     --max;
-                }else{
-                    if(y <= 13){
-                        cases.push(["h"+id3,typeTerrain[x]]);
-                        terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
-                        ++id3; 
-                        ++y;
-                    };
-                    if(y%2 == 0){
-                        cases.push(["h"+id1,typeTerrain[x]]);
-                        terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
-                        ++id1; 
-                        ++y;
-                    }
-                    else{
-                        cases.push(["h"+id2,typeTerrain[x]]);
-                        terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
-                        --id2; 
-                        ++y;
-                    }
+                }
+                else{
+                    c = listecElemRndm();
+                    cases.push(["h"+c,typeTerrain[x]]);
+                    terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
                 }
             }
         }
+
         socket.emit("entree",cases);
         io.emit("getJoueurs",joueurs);
     });
@@ -113,10 +107,6 @@ io.on("connection",(socket)=>{
         
         io.emit("message",data);
     });
-
-
-    
-
 
     let animaux = {};
     let position = [0,12,156,168];
