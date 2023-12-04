@@ -86,15 +86,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
 function resetInputValues() {
     nbrS.forEach((input) => {
-        input.value = '0';
+        input.value = '1';
     });
     document.getElementById('name').value = '';
-    PTSSTATS = 15;
+    PTSSTATS = 6;
     updateStats();
 }
 
 
-let PTSSTATS = 15;
+let PTSSTATS = 6;
 
 function updateStats() {
     if(PTSSTATS>0){
@@ -118,7 +118,7 @@ for(let i=1;i<4;++i){
 
 addS.forEach((element,index)=>{
     element.addEventListener("click",()=>{
-        if(PTSSTATS>0 && parseInt(nbrS[index].value)<10){
+        if(PTSSTATS>0 && parseInt(nbrS[index].value)<5){
         nbrS[index].value = parseInt(nbrS[index].value) + 1;
         PTSSTATS--;
         updateStats();
@@ -128,7 +128,7 @@ addS.forEach((element,index)=>{
 
 subS.forEach((element,index)=>{
     element.addEventListener("click",()=>{
-        if((parseInt(nbrS[index].value) - 1)>=0){
+        if((parseInt(nbrS[index].value) - 1)>=1){
         nbrS[index].value = parseInt(nbrS[index].value) - 1;
         PTSSTATS++;
         updateStats();
