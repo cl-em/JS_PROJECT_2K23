@@ -4,34 +4,37 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <link href="http://localhost:8888/style.css" rel="stylesheet" >
-
-
-    <script src="https://d3js.org/d3.v5.min.js"></script>
-    <script src="/socket.io/socket.io.js"></script>
-
+    
+    <link href="http://localhost:8888/style.css" rel="stylesheet" > <!--Feuille de style-->
+    
+    
+    <script src="https://d3js.org/d3.v5.min.js"></script> <!--D3-->
+    <script src="/socket.io/socket.io.js"></script> <!--SocketIO-->
+    
     <title>Projet JS</title>
 </head>
 <body>
-
-    <p><span id="messageConnexion"></span></p>
-
+    
+    <p><span id="messageConnexion"></span></p> <!--Message qui apparait lors de la connexion-->
+    
     <div class="grid text-center" style="--bs-rows: 3; --bs-columns: 3;">
-    <!-- les trucs pour initialisé la parti (pseudo, stats) -->
-    <div class="init">
-        <!-- name connexion deconnexion -->
-        <p id="veuillez">Veuillez saisir votre username, ainsi que vos statistiques!</p>
-        <input type="text"  id="name">
-        <input type="button" value="Connexion" onclick="entree()">
-        <input type="button" value="Déconnexion" onclick="sortie()">
-
-        <br>
-        <!-- zone pour les paramètre de la partie -->
-        <input id="1j" type="button" value="1">
-        <input id="2j" type="button" value="2">
-        <input id="3j" type="button" value="3">
-        <input id="4j" type="button" value="4">
+        <div class="init">
+            
+            <!--Initialisation du pseudo, entrée/sortie-->
+            <p id="veuillez">Veuillez saisir votre username, ainsi que vos statistiques!</p> 
+            <input type="text"  id="name">
+            <input type="button" value="Connexion" onclick="entree()">
+            <input type="button" value="Déconnexion" onclick="sortie()">
+            
+            <br>
+            
+            <!--Initialisation du nombre de joueurs, -->
+            <input id="1j" type="button" value="1">
+            <input id="2j" type="button" value="2">
+            <input id="3j" type="button" value="3">
+            <input id="4j" type="button" value="4">
+            
+        <!--Script qui permet de récupérer le nombre de joueurs-->    
         <script>
             let nbJoueurs = [];
             for(let i=1;i<5;++i){
@@ -44,66 +47,67 @@
                 });
             });
         </script>
-
-        <!-- stats des joueurs -->
-        <p><span id="ptsstats"></span></p>
-
-        <!-- No1 -->
-        <span id="t1">Reproduction</span> <button id="sub1">-</button>
-        <input type="text" id="nbr1" readonly="" value="0">
-        <button id="add1">+</button>
+            
+            <!--Permet d'afficher le nombre de statistiques qu'il reste à distribuer-->
+            <p><span id="ptsstats"></span></p>
+            
+            <!--Initialisations des statistiques-->
+            
+            <!--Reproduction-->
+            <span id="t1">Reproduction</span> <button id="sub1">-</button>
+            <input type="text" id="nbr1" readonly="" value="0">
+            <button id="add1">+</button>
+            
+            <br>
+            
+            <!--Perception-->
+            <span id="t1">Perception</span> <button id="sub2">-</button>
+            <input type="text" id="nbr2" readonly="" value="0">
+            <button id="add2">+</button>
+            
+            <br>
+            
+            <!--Force-->
+            <span id="t1">Force</span> <button id="sub3">-</button>
+            <input type="text" id="nbr3" readonly="" value="0">
+            <button id="add3">+</button>
+            
+            <br>
+            <br>
+            
+            <input type="button" value="Commencer le jeu" onclick="commencerJeu()">
+        </div>
         
-        <br>
-        
-        <!-- No2 -->
-        <span id="t1">Perception</span> <button id="sub2">-</button>
-        <input type="text" id="nbr2" readonly="" value="0">
-        <button id="add2">+</button>
-        
-        <br>
-        
-        <!-- No3 -->
-        <span id="t1">Force</span> <button id="sub3">-</button>
-        <input type="text" id="nbr3" readonly="" value="0">
-        <button id="add3">+</button>
-        
-        <br>
-        <br>
-
-        <input type="button" value="Commencer le jeu" onclick="commencerJeu()">
-    </div>
-
-    <!-- damier  -->
+        <!--Damier-->
         <div class="damier">
             <svg id="tablier"></svg>
         </div>
-
-    <!-- boite de dialogue (c'est pas demandé mais il est là) -->
-    <!--<div class="chat">
-        <h1>Chat</h1>
-        <input type="text"  id="message">
-        <input type="button" value="envoyer" onclick="message()">
-        <p id="chat">
-
-        </p>
-    </div>  
-    -->
+    
+        <!--Chat a décommenter pour l'implémenter plus tard-->
+        <!--
+        <div class="chat">
+            <h1>Chat</h1>
+            <input type="text"  id="message">
+            <input type="button" value="envoyer" onclick="message()">
+            <p id="chat"></p>
+        </div>  
+        -->
+        
     </div>
-
     
+    <script src="http://localhost:8888/socket.js" ></script> <!--JS "client"-->
+    <script src="http://localhost:8888/hex.js"></script> <!--JS qui crée le damier-->
     
-    
-    <script src="http://localhost:8888/socket.js" ></script>
-    <script src="http://localhost:8888/hex.js"></script>
 </body>
 
+
+<!--Script qui "globalement" permet de gérer les stats, les restreindre à 9 points.., les reset..-->
 <script>
-    //tout ça on peut le mettre dans le socket
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => { //Pour reset les inputs à chaque rafraichissement de la page
     resetInputValues();
 });
 
-function resetInputValues() {
+function resetInputValues() { //Fonction qui permet de reset les inputs de stats a 1, de reset le nom..
     nbrS.forEach((input) => {
         input.value = '1';
     });
@@ -115,16 +119,16 @@ function resetInputValues() {
 
 let PTSSTATS = 6;
 
-function updateStats() {
+function updateStats() { //Fonction qui permet d'afficher le nombre de points de statistiques qu'il reste à distribuer (ou aucun)
     if(PTSSTATS>0){
         document.getElementById('ptsstats').textContent = "Il vous reste " + PTSSTATS + " points de statistiques à distribuer!";
     }
     else{
         document.getElementById('ptsstats').textContent = "Il ne vous reste plus aucun points à distribuer";
     }
-    }
-    
+}
 
+//Ajout/Diminution/Seuil des points de statistiques
 let addS = [];
 let subS = [];
 let nbrS = [];

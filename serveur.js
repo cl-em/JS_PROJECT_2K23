@@ -1,11 +1,14 @@
+/*Initialisations*/
 const express = require('express');
 const app = express();
 const http = require('http');
 const { type } = require('os');
 const server = http.createServer(app);
-const io =  require("socket.io")(server); // bun
-// const io = new require("socket.io")(server); // node.js
+const io =  require("socket.io")(server); /*bun*/
+//const io = new require("socket.io")(server); /*node.js*/
 
+
+/*Initialisation de la classe 'Animal'*/
 class Animal{
     constructor(p){
         this.sexe=false;
@@ -13,19 +16,18 @@ class Animal{
         this.stats={eau:10,faim:10};
     }
 
-    enVie(){
+    enVie(){ /*Méthode*/
         return !(this.stats.eau<=0 || this.stats.faim<=0)
     }   
 }
 
-// app get
 
+/*app.get*/
 server.listen(8888, () => {
     console.log('Le serveur écoute sur le port 8888');
 });
 
 app.get('/', (request, response) => {
-    // console.log("test");
     response.sendFile('index.html', {root: __dirname});
 });
 
@@ -43,21 +45,21 @@ app.get("/:nomFichier",(request,response)=>{
     }
 });
 
-let joueurs=[];
+
+let joueurs=[]; /*{name: nom.value,repro:repro.value,precep: precep.value,force:force.value}*/
 let hote;
 let nbJmax=1;
 let listeCouleurs=["red","purple","yellow","blue"];
-// liste d'objet de type {name,repro,precep,force,couleur}
 
 let cases=[];
 
-let terrain = {"roche":84,"prairie": 59,"eau":26};
+let terrain = {"roche":84,"prairie": 59,"eau":26}; /*50% 35% 15%*/
 let typeTerrain = ["roche","prairie","eau","taniere"];
 
-// position tanieres
+/*Position des tanières sur le damier*/
 let positionTanieres = [6,77,88,159];
 
-// socket
+/*Socket*/
 io.on("connection",(socket)=>{
     socket.on("auchargement",()=>{
         if(cases.length!=0){
@@ -67,7 +69,7 @@ io.on("connection",(socket)=>{
     socket.on("nbJoueurs",(nombre,nomJ)=>{
         if(nomJ==hote.name)
             nbJmax=nombre;
-
+    
     });
 
     socket.on("entree",(data)=>{
@@ -77,18 +79,18 @@ io.on("connection",(socket)=>{
         }
         data["couleur"]=listeCouleurs[joueurs.length];
         joueurs.push(data);
-
+        
         if(hote==null){
             hote=data;
         }
         
-
+        /*Création de listec, une liste qui contient chaque "position" sur le damier, chaque hexagone*/
         let listec = [];
         for(let i=0; i<=168; i++){
             listec.push(i);
         }
-
-        function listecElemRndm(){
+        
+        function listecElemRndm(){ /*Fonction qui retourne aléatoirement un élément parmi listec et l'enleve de listec*/
             if (listec.length > 0){
                 let rndm = Math.floor(Math.random() * listec.length);
                 let elem = listec[rndm];
@@ -96,13 +98,13 @@ io.on("connection",(socket)=>{
                 return elem;
             } 
         }
-
+        
+        /*Génération aléatoire du terrain*/
         if(cases.length==0){
-
+            
             let max = typeTerrain.length-1;
             let rndmTerrain;
-            // typeTerrain.splice(typeTerrain.indexOf("taniere"), 1);
-
+            
             while(terrain.eau>0 || terrain.prairie>0 || terrain.roche>0){
                 x= Math.floor(Math.random()*max);
                 if(terrain[typeTerrain[x]]==0){
@@ -116,17 +118,18 @@ io.on("connection",(socket)=>{
                     terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
                 }
             }
+            
             // listec.splice(6, 1);
             // listec.splice(77,1);
             // listec.splice(88, 1);
             // listec.splice(159,1);
-
+            
             cases[6]="taniere";
             cases[78]="taniere";
             cases[90]="taniere";
             cases[162]="taniere";
         }
-
+        
         socket.emit("entree",cases);
         io.emit("getJoueurs",joueurs);
     });
@@ -140,32 +143,32 @@ io.on("connection",(socket)=>{
         });
         joueurs=newJoueurs;
         console.log(joueurs);
-
+        
         if(nomASupprimer==hote.name){
             hote=joueurs[0];
         }
         io.emit("getJoueurs",joueurs);
         console.log(hote);
     });
-
     
-    // message 
+    
+    /*Messages*/
     socket.on("message",(data)=>{
         io.emit("message",data);
     });
 
     let animaux = {};
 
-    async function commencerJeu (){
+    async function commencerJeu (){ /*Fonction pour lancer le jeu*/
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
-            for(let i=0;i<10;++i){
+            for(let i=0;i<1;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
                 animaux[value.name].push(new Animal(positionTanieres[index]));
             }
         });
         io.emit("commencerJeu",animaux);
 
-        //deroulement du jeu
+        /*Déroulement du jeu*/
         for(let i=0;i<50;++i){
             jouerTour();
             joueurs.forEach((joueur,index)=>{
@@ -179,21 +182,21 @@ io.on("connection",(socket)=>{
             await sleep(750);
         }
     }
-    function sleep(ms) {
+    function sleep(ms) { /*Fonction qui gère le délai entre les tours*/
         return new Promise((resolve) => {
             setTimeout(resolve, ms);
         });
     }
 
-    function jouerTour() {
-    const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index);
-    const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index);
+    function jouerTour() { /*Fonction qui permet de gérer chaque tour, les déplacements..*/
+    const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a gauche*/
+    const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a droite*/
 
         joueurs.forEach((value, index) => {
             if (animaux[value.name]) {
                 animaux[value.name].forEach((animal) => {
                     let choix = Math.floor(Math.random() * 7);
-    
+                    
                     switch (choix) {
                         case 1: //Cas ou il se déplace en haut a gauche.
                             if ((animal.position -13) > 0 && (!bordureG.includes(animal.position))) {
@@ -243,13 +246,19 @@ io.on("connection",(socket)=>{
                             animal.stats.faim -= 0.25;
                             break;
                     }
-
-                    if(cases[animal.position]=="prairie"){
+                    
+                    if(cases[animal.position]=="prairie"){ /*Nourrit l'animal si il se trouve sur de la prairie et re-set ses stats a 10 si il dépasse (10 étant le seuil)*/
                         animal.stats.faim+=2;
-                    }else if(cases[animal.position]=="eau"){
+                        if((animal.stats.faim>10)){
+                            animal.stats.faim = 10;
+                        }
+                    }else if(cases[animal.position]=="eau"){ /*Hydrate l'animal si il se trouve sur de l'eau et re-set ses stats a 10 si il dépasse (10 étant le seuil)*/
                         animal.stats.eau+=3;
+                        if((animal.stats.eau>10)){
+                            animal.stats.eau = 10;
+                        }
                     }
-
+                
                 });
             } else {
                 console.log("animaux[value.name] est pas dÃ©fini");
