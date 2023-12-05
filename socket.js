@@ -53,31 +53,35 @@ let joueurs;
 let animaux;
 let damier;
 
+// permet de récupérer la liste des joueurs
 socket.on("getJoueurs",(data)=>{
     joueurs=data;
 })
 
+// colorie damier en fonction du type de la case (roche,prairie,eau,taniere)
 let colors = {"roche":"#AAAAAA","prairie":"#86DC3D","eau":"#1AA7EC","taniere":"#582900"}
 const resetDamier = () =>{
     damier.forEach((element,index)=>{
         d3.select("#h"+index).attr("fill",colors[element]);
     });
 }
+
+// permet de récupérer toutes les cases du damier et colorie le damier 
 socket.on("entree",(cases)=>{
     damier = cases;
-    // cases.forEach(element => {
-    //     d3.select("#"+element[0]).attr("fill",colors[element[1]]);
-    // });
-
     for(let i=0;i<cases.length;++i){
         d3.select("#h"+i).attr("fill",colors[cases[i]]);
     }
 });
 
+// récupérer la liste des animaux 
+// animaux est un dictionnaire qui a pour clé le nom du joueur et pour valeur une liste contenant la liste des animaux
 socket.on("commencerJeu",(data)=>{
     animaux = data;
 });
 
+// permet de jouer un tour, récupère le dictionnaire des animaux mis à jour et met en couleur une case où un animal se trouve dessus
+// chaque joueur a une couleur différente
 socket.on("jouerTour",(data)=>{
 
     resetDamier();

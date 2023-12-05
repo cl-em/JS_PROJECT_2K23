@@ -31,12 +31,15 @@ app.get('/', (request, response) => {
     response.sendFile('index.html', {root: __dirname});
 });
 
+// permet au client de récupérer les fichiers dont il a besoin
+// les fichiers dont il a besoin sont mit dans une liste pour évité qu'il accède à n'importe quel fichier
+
 let fileList = ["hex.js",
-"index.html",
-"lol.png",
-"socket.js",
-"animaux.js",
-"style.css"];
+    "index.html",
+    "lol.png",
+    "socket.js",
+    "animaux.js",
+    "style.css"];
 
 app.get("/:nomFichier",(request,response)=>{
     let file = request.params.nomFichier;
@@ -46,14 +49,16 @@ app.get("/:nomFichier",(request,response)=>{
 });
 
 
-let joueurs=[]; /*{name: nom.value,repro:repro.value,precep: precep.value,force:force.value}*/
+let joueurs=[]; /*{name: name.value,repro:repro.value,precep: precep.value,force:force.value}*/
 let hote;
 let nbJmax=1;
+// couleurs des animaux des joueurs 
 let listeCouleurs=["red","purple","yellow","blue"];
 
+// toutes les cases du tablier sont stocker dans cette variable : index = identifiant de la case, valeur = "type"
 let cases=[];
 
-let terrain = {"roche":84,"prairie": 59,"eau":26}; /*50% 35% 15%*/
+let terrain = {"roche":84,"prairie": 59,"eau":26}; /*~50% ~35% ~15%*/
 let typeTerrain = ["roche","prairie","eau","taniere"];
 
 /*Position des tanières sur le damier*/
@@ -61,17 +66,21 @@ let positionTanieres = [6,77,88,159];
 
 /*Socket*/
 io.on("connection",(socket)=>{
+
+    // lors du chargement de la pache si un damier existe déjà, on l'affiche
     socket.on("auchargement",()=>{
         if(cases.length!=0){
             socket.emit("entree",cases,joueurs);
         }
     });
+    // modifie le nombre maximum de joueur dans la partie et on vérifie que cette modification est bien faite pas l'hôte
     socket.on("nbJoueurs",(nombre,nomJ)=>{
         if(nomJ==hote.name)
             nbJmax=nombre;
     
     });
 
+    // à l'entrée on vérifie s'il y a pas trop de joueur et si il n'y a pas hôte le nouveau joueur le devient
     socket.on("entree",(data)=>{
         if(nbJmax<=joueurs.length){
             socket.emit("msgserv","trop de joueurs");
@@ -134,7 +143,8 @@ io.on("connection",(socket)=>{
         io.emit("getJoueurs",joueurs);
     });
 
-
+    // à la sortie d'un joueur on l'enlève de la liste des joueurs et si c'était l'hôte, on change l'hôte
+    // on envoie la nouvelle liste de joueur aux clients
     socket.on("sortie",nomASupprimer=>{
         let newJoueurs=[];
         joueurs.forEach(joueur=>{
