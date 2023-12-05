@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const { type } = require('os');
 const server = http.createServer(app);
 const io =  require("socket.io")(server); // bun
 // const io = new require("socket.io")(server); // node.js
@@ -13,7 +14,7 @@ class Animal{
     }
 
     enVie(){
-        return !(this.stats.eau==0 || this.stats.faim==10)
+        return !(this.stats.eau<=0 || this.stats.faim<=0)
     }   
 }
 
@@ -50,7 +51,10 @@ let nbJmax=1;
 let cases=[];
 
 let terrain = {"roche":84,"prairie": 59,"eau":26};
-let typeTerrain = ["roche","prairie","eau"];
+let typeTerrain = ["roche","prairie","eau","taniere"];
+
+// position tanieres
+let positionTanieres = [6,77,88,159];
 
 // socket
 io.on("connection",(socket)=>{
@@ -96,8 +100,9 @@ io.on("connection",(socket)=>{
 
         if(cases.length==0){
 
-            let max = typeTerrain.length;
+            let max = typeTerrain.length-1;
             let rndmTerrain;
+            // typeTerrain.splice(typeTerrain.indexOf("taniere"), 1);
 
             while(terrain.eau>0 || terrain.prairie>0 || terrain.roche>0){
                 x= Math.floor(Math.random()*max);
@@ -107,10 +112,20 @@ io.on("connection",(socket)=>{
                 }
                 else{
                     c = listecElemRndm();
-                    cases.push(["h"+c,typeTerrain[x]]);
+                    // cases.push(["h"+c,typeTerrain[x]]);
+                    cases[c]=typeTerrain[x];
                     terrain[typeTerrain[x]]=terrain[typeTerrain[x]]-1;
                 }
             }
+            // listec.splice(6, 1);
+            // listec.splice(77,1);
+            // listec.splice(88, 1);
+            // listec.splice(159,1);
+
+            cases[6]="taniere";
+            cases[78]="taniere";
+            cases[90]="taniere";
+            cases[162]="taniere";
         }
 
         socket.emit("entree",cases);
@@ -141,13 +156,12 @@ io.on("connection",(socket)=>{
     });
 
     let animaux = {};
-    let position = [0,12,156,168];
 
     async function commencerJeu (){
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
             for(let i=0;i<10;++i){
-                animaux[value.name].push(new Animal(position[index]));
+                animaux[value.name].push(new Animal(positionTanieres[index]));
             }
         });
         io.emit("commencerJeu",animaux);
@@ -230,6 +244,13 @@ io.on("connection",(socket)=>{
                             animal.stats.faim -= 0.25;
                             break;
                     }
+
+                    if(cases[animal.position]=="prairie"){
+                        animal.stats.faim+=2;
+                    }else if(cases[animal.position]=="eau"){
+                        animal.stats.eau+=3;
+                    }
+
                 });
             } else {
                 console.log("animaux[value.name] est pas dÃ©fini");

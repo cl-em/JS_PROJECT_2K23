@@ -58,30 +58,25 @@ socket.on("getJoueurs",(data)=>{
     joueurs=data;
 })
 
-let colors = {"roche":"#AAAAAA","prairie":"#86DC3D","eau":"#1AA7EC"}
+let colors = {"roche":"#AAAAAA","prairie":"#86DC3D","eau":"#1AA7EC","taniere":"#582900"}
 const resetDamier = () =>{
-    damier.forEach(element=>{
-        d3.select("#"+element[0]).attr("fill",colors[element[1]]);
+    damier.forEach((element,index)=>{
+        d3.select("#h"+index).attr("fill",colors[element]);
     });
 }
 socket.on("entree",(cases)=>{
     damier = cases;
-    cases.forEach(element => {
-        d3.select("#"+element[0]).attr("fill",colors[element[1]]);
-    });
+    // cases.forEach(element => {
+    //     d3.select("#"+element[0]).attr("fill",colors[element[1]]);
+    // });
+
+    for(let i=0;i<cases.length;++i){
+        d3.select("#h"+i).attr("fill",colors[cases[i]]);
+    }
 });
 
 socket.on("commencerJeu",(data)=>{
     animaux = data;
-
-    // resetDamier();
-
-    // joueurs.forEach((value)=>{
-    //     data[value.name].forEach((animal)=>{
-    //         d3.select("#h"+animal.position).attr("fill","red");
-    //     });
-    // });
-
 });
 
 socket.on("jouerTour",(data)=>{
