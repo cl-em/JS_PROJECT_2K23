@@ -11,6 +11,12 @@ let force = document.getElementById("nbr3");
 let msg = document.getElementById("message");
 let chat = document.getElementById("chat");
 
+function sleep(ms) {
+    return new Promise((resolve) => {
+        setTimeout(resolve, ms);
+    });
+}
+
 function entree(){
     let joueur = {name: nom.value,repro:repro.value,precep: precep.value,force:force.value};
     document.getElementById('messageConnexion').textContent = "Connecté en tant que " + nom.value;
@@ -32,6 +38,9 @@ function message(){
 function commencerJeu(){
     socket.emit("commencerJeu");
 }
+socket.on("msgserv",(msg)=>{
+    document.getElementById("veuillez").innerText=msg;
+});
 
 socket.on("message",(data)=>{
     if(data.text.endsWith(".gif")){

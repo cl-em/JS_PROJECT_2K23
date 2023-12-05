@@ -7,7 +7,7 @@ const io =  require("socket.io")(server); // bun
 
 class Animal{
     constructor(p){
-        this.sexe=false; //est ce vraiment necessaire
+        this.sexe=false;
         this.position=p;
         this.stats={eau:10,faim:10};
     }
@@ -43,6 +43,8 @@ app.get("/:nomFichier",(request,response)=>{
 });
 
 let joueurs=[];
+let hote;
+let nbJmax=1;
 // liste d'objet de type {name,repro,precep,force}
 
 let cases=[];
@@ -57,9 +59,26 @@ io.on("connection",(socket)=>{
             socket.emit("entree",cases,joueurs);
         }
     });
+    socket.on("nbJoueurs",(nombre,nomJ)=>{
+        if(nomJ==hote.name)
+            nbJmax=nombre;
+        console.log(nbJmax);
+
+    });
 
     socket.on("entree",(data)=>{
+        console.log(nbJmax);
+        if(nbJmax<=joueurs.length){
+            socket.emit("msgserv","trop de joueurs");
+            return ;
+        }
+
         joueurs.push(data);
+
+        if(hote==null){
+            hote=data;
+        }
+        
 
         let listec = [];
         for(let i=0; i<=168; i++){
@@ -106,16 +125,18 @@ io.on("connection",(socket)=>{
                 newJoueurs.push(joueur);
         });
         joueurs=newJoueurs;
+        console.log(joueurs);
+
+        if(nomASupprimer==hote.name){
+            hote=joueurs[0];
+        }
         io.emit("getJoueurs",joueurs);
-        
+        console.log(hote);
     });
 
     
     // message 
     socket.on("message",(data)=>{
-        // messages.push(data);
-        console.log(data.text);
-        
         io.emit("message",data);
     });
 

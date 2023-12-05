@@ -20,13 +20,31 @@
     <div class="grid text-center" style="--bs-rows: 3; --bs-columns: 3;">
     <!-- les trucs pour initialisé la parti (pseudo, stats) -->
     <div class="init">
+        <!-- name connexion deconnexion -->
         <p id="veuillez">Veuillez saisir votre username, ainsi que vos statistiques!</p>
         <input type="text"  id="name">
         <input type="button" value="Connexion" onclick="entree()">
         <input type="button" value="Déconnexion" onclick="sortie()">
 
         <br>
-        
+        <!-- zone pour les paramètre de la partie -->
+        <input id="1j" type="button" value="1">
+        <input id="2j" type="button" value="2">
+        <input id="3j" type="button" value="3">
+        <input id="4j" type="button" value="4">
+        <script>
+            let nbJoueurs = [];
+            for(let i=1;i<5;++i){
+                nbJoueurs.push(document.getElementById(""+i+"j"));
+            }
+            nbJoueurs.forEach((element,index)=>{
+                element.addEventListener("click",()=>{
+                    socket.emit("nbJoueurs",index+1,document.getElementById("name").value);
+                });
+            });
+        </script>
+
+        <!-- stats des joueurs -->
         <p><span id="ptsstats"></span></p>
 
         <!-- No1 -->
