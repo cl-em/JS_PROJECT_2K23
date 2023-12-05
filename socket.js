@@ -85,7 +85,7 @@ socket.on("jouerTour",(data)=>{
     animaux = data;
     joueurs.forEach((value)=>{
         data[value.name].forEach((animal)=>{
-            d3.select("#h"+animal.position).attr("fill","red");
+            d3.select("#h"+animal.position).attr("fill",value.couleur);
         });
     });
 });

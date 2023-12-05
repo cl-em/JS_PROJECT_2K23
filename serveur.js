@@ -46,7 +46,8 @@ app.get("/:nomFichier",(request,response)=>{
 let joueurs=[];
 let hote;
 let nbJmax=1;
-// liste d'objet de type {name,repro,precep,force}
+let listeCouleurs=["red","purple","yellow","blue"];
+// liste d'objet de type {name,repro,precep,force,couleur}
 
 let cases=[];
 
@@ -66,17 +67,15 @@ io.on("connection",(socket)=>{
     socket.on("nbJoueurs",(nombre,nomJ)=>{
         if(nomJ==hote.name)
             nbJmax=nombre;
-        console.log(nbJmax);
 
     });
 
     socket.on("entree",(data)=>{
-        console.log(nbJmax);
         if(nbJmax<=joueurs.length){
             socket.emit("msgserv","trop de joueurs");
             return ;
         }
-
+        data["couleur"]=listeCouleurs[joueurs.length];
         joueurs.push(data);
 
         if(hote==null){
