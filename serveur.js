@@ -13,7 +13,7 @@ class Animal{
     constructor(p){
         this.sexe=false;
         this.position=p;
-        this.stats={eau:10,faim:10};
+        this.stats={eau:4,faim:4};
     }
 
     enVie(){ /*Méthode*/
@@ -203,7 +203,7 @@ io.on("connection",(socket)=>{
 const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a droite*/
 const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a gauche*/
 
-    function deplacementHautGauche(){
+    function deplacementHautGauche(animal){
         if ((animal.position -13) > 0 && (!bordureG.includes(animal.position))) {
             animal.position = animal.position -13;
             animal.stats.eau -= 1;
@@ -211,7 +211,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
         }
     }
 
-    function deplacementHautDroite(){
+    function deplacementHautDroite(animal){
         if ((animal.position -12) > 0 && (!bordureD.includes(animal.position))) {
             animal.position = animal.position -12;
             animal.stats.eau -= 1;
@@ -219,7 +219,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
         }
     }
 
-    function deplacementGauche(){
+    function deplacementGauche(animal){
         if ((!bordureG.includes(animal.position))) {
             animal.position = animal.position -1;
             animal.stats.eau -= 1;
@@ -227,7 +227,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
         }
     }
 
-    function deplacementDroite(){
+    function deplacementDroite(animal){
         if ((!bordureD.includes(animal.position))) {
             animal.position = animal.position + 1;
             animal.stats.eau -= 1;
@@ -235,7 +235,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
         }
     }
 
-    function deplacementBasGauche(){
+    function deplacementBasGauche(animal){
         if ((animal.position + 12) < 168 && (!bordureG.includes(animal.position))) {
             animal.position = animal.position + 12;
             animal.stats.eau -= 1;
@@ -243,7 +243,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
         }
     }
 
-    function deplacementBasDroite(){
+    function deplacementBasDroite(animal){
         if ((animal.position + 13) < 168 && (!bordureD.includes(animal.position))) {
             animal.position = animal.position + 13;
             animal.stats.eau -= 1;
@@ -251,19 +251,29 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
         }
     }
 
-    function resteSurPlace(){
+    function resteSurPlace(animal){
         animal.position = animal.position //Cas ou il reste sur place
         animal.stats.eau -= 0.5;
         animal.stats.faim -= 0.25;
     }
 
-    function deplacementEauPlusProche(){
-        let perception //stats a ajouter dans la classe animale pour pouvoir witch dessus
+    function choisirDeplacementEntreDeux(fonction1, fonction2){
+        var random = Math.random();
+        if (random < 0.5) {
+            return fonction1;
+        } else {
+            return fonction2;
+        }
+    }
+
+    function deplacementEauPlusProche(joueur, animal){
+        let perception  = joueur.precep //stats a ajouter dans la classe animale pour pouvoir witch dessus
         let listeDirection = [deplacementHautGauche, deplacementHautDroite, deplacementGauche, deplacementDroite, deplacementBasGauche, deplacementBasDroite] //liste qui contient toutes les fonctions de déplacements
         let listeEauP1 = [];
+        let d = false;
 
         if(cases[animal.position]=="eau"){ //cas ou l'animal est deja sur de l'eau
-            resteSurPlace();
+            resteSurPlace(animal);
         }
         else{
                 //Cas ou l'animal a 1 de perception, si il voit seulement les cases autour de lui
@@ -289,26 +299,452 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
                 if(listeEauP1.length > 0){ //Va aléatoirement sur une case eau, si il en existe une
                     let rndmP1 = listeEauP1[Math.floor(Math.random() * listeEauP1.length)];
                     animal.position = rndmP1;
-                }
-                if(perception = 1){ //Si je vois aucune case d'eau, je me déplace aléatoirement
-                    let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
-                    deplacementRndm();
+                    animal.stats.eau -= 1;
+                    animal.stats.faim -= 0.50;
+                    d = true;
                 }
 
                 //Cas ou l'animal a 2 de perceptions
 
-                if(cases[animal.position-26]){
+                if(cases[animal.position-26]=="eau" && perception > 1 && d == false){ //se déplace en haut a gauche si eau deux fois en haut a gauche
+                    deplacementHautGauche(animal);
+                    d = true;
+                }
 
+                else if(cases[animal.position-24]=="eau" && perception > 1 && d == false){ //se déplace en haut a droite si eau deux fois en haut a droite
+                    deplacementHautDroite(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-2]=="eau" && perception > 1 && d == false){ //se déplace a gauche si eau deux fois a gauche
+                    deplacementGauche(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+2]=="eau" && perception > 1 && d == false){ //se déplace a droite si eau deux fois a droite
+                    deplacementDroite(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+24]=="eau" && perception > 1 && d == false){ //se déplace en bas a gauche si eau deux fois en bas a gauche
+                    deplacementBasGauche(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+26]=="eau" && perception > 1 && d == false){ //se déplace en bas a droite si eau deux fois en bas a droite
+                    deplacementBasDroite(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-14]=="eau" && perception > 1 && d == false){ //se déplace en haut a gauche ou a gauche si eau en haut a gauche + gauche
+                    let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementHautGauche);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-11]=="eau" && perception > 1 && d == false){ //se déplace en haut a droite ou a droite si eau en haut a droite + droite
+                    let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementHautDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+11]=="eau" && perception > 1 && d == false){ //se déplace en bas a gauche ou a gauche si eau en bas a gauche + gauche
+                    let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementBasGauche);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+14]=="eau" && perception > 1 && d == false){ //se déplace en bas a droite ou a droite si eau en bas a droite + droite
+                    let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementBasDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-25]=="eau" && perception > 1 && d == false){ //se déplace en haut a gauche ou en haut a droite si eau en haut a gauche + en haut a droite ou en haut a droite + en haut a gauche
+                    let choix1 = choisirDeplacementEntreDeux(deplacementHautGauche, deplacementHautDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+25]=="eau" && perception > 1 && d == false){ //se déplace en bas a gauche ou en bas a droite si eau en bas a gauche + en bas a droite ou en bas a droite + en bas a gauche
+                    let choix1 = choisirDeplacementEntreDeux(deplacementBasGauche, deplacementBasDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                //Cas ou l'animal a 3 de perception
+                if(cases[animal.position-39]=="eau" && perception > 2 && d == false){ //1
+                    deplacementHautGauche(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-36]=="eau" && perception > 2 && d == false){ //2 
+                    deplacementHautDroite(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+36]=="eau" && perception > 2 && d == false){ //3
+                    deplacementBasGauche(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+39]=="eau" && perception > 2 && d == false){ //4
+                    deplacementBasDroite(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+3]=="eau" && perception > 2 && d == false){ //5
+                    deplacementDroite(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-3]=="eau" && perception > 2 && d == false){ //6
+                    deplacementGauche(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+27]=="eau" && perception > 2 && d == false){  //7
+                    let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementBasDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+15]=="eau" && perception > 2 && d == false){  //8
+                    let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementBasDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+10]=="eau" && perception > 2 && d == false){ //9
+                    let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementBasGauche);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+23]=="eau" && perception > 2 && d == false){ //10
+                    let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementBasGauche);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+37]=="eau" && perception > 2 && d == false){ //11
+                    let choix1 = choisirDeplacementEntreDeux(deplacementBasGauche, deplacementBasDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position+38]=="eau" && perception > 2 && d == false){ //12
+                    let choix1 = choisirDeplacementEntreDeux(deplacementBasGauche, deplacementBasDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-10]=="eau" && perception > 2 && d == false){ //13
+                    let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementHautDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-23]=="eau" && perception > 2 && d == false){ //14
+                    let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementHautDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-15]=="eau" && perception > 2 && d == false){ //15
+                    let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementHautGauche);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-27]=="eau" && perception > 2 && d == false){ //16
+                    let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementHautGauche);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-38]=="eau" && perception > 2 && d == false){ //17
+                    let choix1 = choisirDeplacementEntreDeux(deplacementHautGauche, deplacementHautDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+                else if(cases[animal.position-37]=="eau" && perception > 2 && d == false){ //18
+                    let choix1 = choisirDeplacementEntreDeux(deplacementHautGauche, deplacementHautDroite);
+                    choix1(animal);
+                    d = true;
+                }
+
+
+
+                else if(d == false){ //Si je vois aucune case d'eau, je me déplace aléatoirement
+                    let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
+                    deplacementRndm(animal);
+                    d = true;
                 }
             }
+        }
+
+    function deplacementPrairiePlusProche(joueur, animal){
+            let perception  = joueur.precep //stats a ajouter dans la classe animale pour pouvoir witch dessus
+            let listeDirection = [deplacementHautGauche, deplacementHautDroite, deplacementGauche, deplacementDroite, deplacementBasGauche, deplacementBasDroite] //liste qui contient toutes les fonctions de déplacements
+            let listePrairieP1 = [];
+            let d = false;
+        
+            if(cases[animal.position]=="prairie"){ //cas ou l'animal est deja sur de l'prairie
+                resteSurPlace(animal);
+            }
+            else{
+                    //Cas ou l'animal a 1 de perception, si il voit seulement les cases autour de lui
+        
+                    if((cases[animal.position-13]=="prairie") && perception>0) //Ajoute ssi en haut a gauche c'est de l'prairie
+                        listePrairieP1.push(animal.position-13);
+        
+                    if((cases[animal.position-12]=="prairie") && perception>0) //Ajoute ssi en haut a droite c'est de l'prairie
+                        listePrairieP1.push(animal.position-12);
+        
+                    if((cases[animal.position-1]=="prairie") && perception>0) //Ajoute ssi a gauche c'est de l'prairie
+                        listePrairieP1.push(animal.position-1);
+        
+                    if((cases[animal.position+1]=="prairie") && perception>0) //Ajoute ssi a droite c'est de l'prairie
+                        listePrairieP1.push(animal.position+1);
+        
+                    if((cases[animal.position+12]=="prairie") && perception>0) //Ajoute ssi en bas a gauche c'est de l'prairie
+                        listePrairieP1.push(animal.position+12);
+        
+                    if((cases[animal.position+13]=="prairie") && perception >0) //Ajoute ssi en bas a droite c'est de l'prairie
+                        listePrairieP1.push(animal.position+13);
+        
+                    if(listePrairieP1.length > 0){ //Va aléatoirement sur une case prairie, si il en existe une
+                        let rndmP1 = listePrairieP1[Math.floor(Math.random() * listePrairieP1.length)];
+                        animal.position = rndmP1;
+                        animal.stats.prairie -= 1;
+                        animal.stats.faim -= 0.50;
+                        d = true;
+                    }
+        
+                    //Cas ou l'animal a 2 de perceptions
+        
+                    if(cases[animal.position-26]=="prairie" && perception > 1 && d == false){ //se déplace en haut a gauche si prairie deux fois en haut a gauche
+                        deplacementHautGauche(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-24]=="prairie" && perception > 1 && d == false){ //se déplace en haut a droite si prairie deux fois en haut a droite
+                        deplacementHautDroite(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-2]=="prairie" && perception > 1 && d == false){ //se déplace a gauche si prairie deux fois a gauche
+                        deplacementGauche(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+2]=="prairie" && perception > 1 && d == false){ //se déplace a droite si prairie deux fois a droite
+                        deplacementDroite(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+24]=="prairie" && perception > 1 && d == false){ //se déplace en bas a gauche si prairie deux fois en bas a gauche
+                        deplacementBasGauche(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+26]=="prairie" && perception > 1 && d == false){ //se déplace en bas a droite si prairie deux fois en bas a droite
+                        deplacementBasDroite(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-14]=="prairie" && perception > 1 && d == false){ //se déplace en haut a gauche ou a gauche si prairie en haut a gauche + gauche
+                        let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementHautGauche);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-11]=="prairie" && perception > 1 && d == false){ //se déplace en haut a droite ou a droite si prairie en haut a droite + droite
+                        let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementHautDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-11]=="prairie" && perception > 1 && d == false){ //se déplace en bas a gauche ou a gauche si prairie en bas a gauche + gauche
+                        let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementBasGauche);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+14]=="prairie" && perception > 1 && d == false){ //se déplace en bas a droite ou a droite si prairie en bas a droite + droite
+                        let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementBasDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-25]=="prairie" && perception > 1 && d == false){ //se déplace en haut a gauche ou en haut a droite si prairie en haut a gauche + en haut a droite ou en haut a droite + en haut a gauche
+                        let choix1 = choisirDeplacementEntreDeux(deplacementHautGauche, deplacementHautDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+25]=="prairie" && perception > 1 && d == false){ //se déplace en bas a gauche ou en bas a droite si prairie en bas a gauche + en bas a droite ou en bas a droite + en bas a gauche
+                        let choix1 = choisirDeplacementEntreDeux(deplacementBasGauche, deplacementBasDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    //Cas ou l'animal a 3 de perception
+                    if(cases[animal.position-39]=="prairie" && perception > 2 && d == false){ //1
+                        deplacementHautGauche(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-36]=="prairie" && perception > 2 && d == false){ //2 
+                        deplacementHautDroite(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+36]=="prairie" && perception > 2 && d == false){ //3
+                        deplacementBasGauche(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+39]=="prairie" && perception > 2 && d == false){ //4
+                        deplacementBasDroite(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+3]=="prairie" && perception > 2 && d == false){ //5
+                        deplacementDroite(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-3]=="prairie" && perception > 2 && d == false){ //6
+                        deplacementGauche(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+27]=="prairie" && perception > 2 && d == false){  //7
+                        let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementBasDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+15]=="prairie" && perception > 2 && d == false){  //8
+                        let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementBasDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+10]=="prairie" && perception > 2 && d == false){ //9
+                        let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementBasGauche);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+23]=="prairie" && perception > 2 && d == false){ //10
+                        let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementBasGauche);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+37]=="prairie" && perception > 2 && d == false){ //11
+                        let choix1 = choisirDeplacementEntreDeux(deplacementBasGauche, deplacementBasDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position+38]=="prairie" && perception > 2 && d == false){ //12
+                        let choix1 = choisirDeplacementEntreDeux(deplacementBasGauche, deplacementBasDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-10]=="prairie" && perception > 2 && d == false){ //13
+                        let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementHautDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-23]=="prairie" && perception > 2 && d == false){ //14
+                        let choix1 = choisirDeplacementEntreDeux(deplacementDroite, deplacementHautDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-15]=="prairie" && perception > 2 && d == false){ //15
+                        let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementHautGauche);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-27]=="prairie" && perception > 2 && d == false){ //16
+                        let choix1 = choisirDeplacementEntreDeux(deplacementGauche, deplacementHautGauche);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-38]=="prairie" && perception > 2 && d == false){ //17
+                        let choix1 = choisirDeplacementEntreDeux(deplacementHautGauche, deplacementHautDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+                    else if(cases[animal.position-37]=="prairie" && perception > 2 && d == false){ //18
+                        let choix1 = choisirDeplacementEntreDeux(deplacementHautGauche, deplacementHautDroite);
+                        choix1(animal);
+                        d = true;
+                    }
+        
+        
+        
+                    else if(d == false){ //Si je vois aucune case d'prairie, je me déplace aléatoirement
+                        let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
+                        deplacementRndm(animal);
+                        d = true;
+                    }
+                }
         }
 
     //--------------------------------------------------------------------------------------------------------
 
     function jouerTour() { /*Fonction qui permet de gérer chaque tour, les déplacements..*/
-    const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a gauche*/
-    const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a droite*/
+        joueurs.forEach((value, index) => {
+            if (animaux[value.name]) {
+                animaux[value.name].forEach((animal) => {
 
+                    if(animal.stats.eau <= 6){
+                        deplacementEauPlusProche(value, animal);
+                    }
+
+                    else if(animal.stats.faim <= 6){
+                        deplacementPrairiePlusProche(value, animal);
+                    }
+                    else{
+                        let listeDirection = [deplacementHautGauche, deplacementHautDroite, deplacementGauche, deplacementDroite, deplacementBasGauche, deplacementBasDroite];
+                        let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
+                        deplacementRndm(animal);
+                    }
+                    
+                    if(cases[animal.position]=="prairie"){ /*Nourrit l'animal si il se trouve sur de la prairie et re-set ses stats a 10 si il dépasse (10 étant le seuil)*/
+                        animal.stats.faim+=2;
+                        if((animal.stats.faim>10)){
+                            animal.stats.faim = 10;
+                        }
+                    }else if(cases[animal.position]=="eau"){ /*Hydrate l'animal si il se trouve sur de l'eau et re-set ses stats a 10 si il dépasse (10 étant le seuil)*/
+                        animal.stats.eau+=3;
+                        if((animal.stats.eau>10)){
+                            animal.stats.eau = 10;
+                        }
+                    }
+                
+                });
+            } else {
+                console.log("animaux[value.name] est pas dÃ©fini");
+            }
+        });
+        io.emit("jouerTour", animaux);
+    }
+
+    /*function jouerTour() { /*Fonction qui permet de gérer chaque tour, les déplacements..
         joueurs.forEach((value, index) => {
             if (animaux[value.name]) {
                 animaux[value.name].forEach((animal) => {
@@ -364,12 +800,12 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
                             break;
                     }
                     
-                    if(cases[animal.position]=="prairie"){ /*Nourrit l'animal si il se trouve sur de la prairie et re-set ses stats a 10 si il dépasse (10 étant le seuil)*/
+                    if(cases[animal.position]=="prairie"){ /*Nourrit l'animal si il se trouve sur de la prairie et re-set ses stats a 10 si il dépasse (10 étant le seuil)
                         animal.stats.faim+=2;
                         if((animal.stats.faim>10)){
                             animal.stats.faim = 10;
                         }
-                    }else if(cases[animal.position]=="eau"){ /*Hydrate l'animal si il se trouve sur de l'eau et re-set ses stats a 10 si il dépasse (10 étant le seuil)*/
+                    }else if(cases[animal.position]=="eau"){ /*Hydrate l'animal si il se trouve sur de l'eau et re-set ses stats a 10 si il dépasse (10 étant le seuil)
                         animal.stats.eau+=3;
                         if((animal.stats.eau>10)){
                             animal.stats.eau = 10;
@@ -382,7 +818,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
             }
         });
         io.emit("jouerTour", animaux);
-    }
+    }*/
 
     socket.on("commencerJeu",commencerJeu);
 
