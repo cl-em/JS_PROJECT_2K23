@@ -24,7 +24,7 @@ function creerTablier(nblignes,nbcolonnes){ //Fonction permettant de créer le t
         
             d="";
             for(h in hex){
-                let x=hex[h][0] +(rayon-distance)*(2+ligne%2+2*colonne);
+                let x=hex[h][0] +(rayon-distance)*(2+ligne+2*colonne);
                 let y=hex[h][1] + distance*2 +(rayon-distance*2)*(1+2*ligne);
                 
                 if(h==0)

@@ -198,6 +198,113 @@ io.on("connection",(socket)=>{
         });
     }
 
+    //------------------------------------------------------------------------------------------------------
+
+const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a droite*/
+const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a gauche*/
+
+    function deplacementHautGauche(){
+        if ((animal.position -13) > 0 && (!bordureG.includes(animal.position))) {
+            animal.position = animal.position -13;
+            animal.stats.eau -= 1;
+            animal.stats.faim -= 0.50;
+        }
+    }
+
+    function deplacementHautDroite(){
+        if ((animal.position -12) > 0 && (!bordureD.includes(animal.position))) {
+            animal.position = animal.position -12;
+            animal.stats.eau -= 1;
+            animal.stats.faim -= 0.50;
+        }
+    }
+
+    function deplacementGauche(){
+        if ((!bordureG.includes(animal.position))) {
+            animal.position = animal.position -1;
+            animal.stats.eau -= 1;
+            animal.stats.faim -= 0.50;
+        }
+    }
+
+    function deplacementDroite(){
+        if ((!bordureD.includes(animal.position))) {
+            animal.position = animal.position + 1;
+            animal.stats.eau -= 1;
+            animal.stats.faim -= 0.50;
+        }
+    }
+
+    function deplacementBasGauche(){
+        if ((animal.position + 12) < 168 && (!bordureG.includes(animal.position))) {
+            animal.position = animal.position + 12;
+            animal.stats.eau -= 1;
+            animal.stats.faim -= 0.50;
+        }
+    }
+
+    function deplacementBasDroite(){
+        if ((animal.position + 13) < 168 && (!bordureD.includes(animal.position))) {
+            animal.position = animal.position + 13;
+            animal.stats.eau -= 1;
+            animal.stats.faim -= 0.50;
+        }
+    }
+
+    function resteSurPlace(){
+        animal.position = animal.position //Cas ou il reste sur place
+        animal.stats.eau -= 0.5;
+        animal.stats.faim -= 0.25;
+    }
+
+    function deplacementEauPlusProche(){
+        let perception //stats a ajouter dans la classe animale pour pouvoir witch dessus
+        let listeDirection = [deplacementHautGauche, deplacementHautDroite, deplacementGauche, deplacementDroite, deplacementBasGauche, deplacementBasDroite] //liste qui contient toutes les fonctions de déplacements
+        let listeEauP1 = [];
+
+        if(cases[animal.position]=="eau"){ //cas ou l'animal est deja sur de l'eau
+            resteSurPlace();
+        }
+        else{
+                //Cas ou l'animal a 1 de perception, si il voit seulement les cases autour de lui
+
+                if((cases[animal.position-13]=="eau") && perception>0) //Ajoute ssi en haut a gauche c'est de l'eau
+                    listeEauP1.push(animal.position-13);
+
+                if((cases[animal.position-12]=="eau") && perception>0) //Ajoute ssi en haut a droite c'est de l'eau
+                    listeEauP1.push(animal.position-12);
+
+                if((cases[animal.position-1]=="eau") && perception>0) //Ajoute ssi a gauche c'est de l'eau
+                    listeEauP1.push(animal.position-1);
+
+                if((cases[animal.position+1]=="eau") && perception>0) //Ajoute ssi a droite c'est de l'eau
+                    listeEauP1.push(animal.position+1);
+
+                if((cases[animal.position+12]=="eau") && perception>0) //Ajoute ssi en bas a gauche c'est de l'eau
+                    listeEauP1.push(animal.position+12);
+
+                if((cases[animal.position+13]=="eau") && perception >0) //Ajoute ssi en bas a droite c'est de l'eau
+                    listeEauP1.push(animal.position+13);
+
+                if(listeEauP1.length > 0){ //Va aléatoirement sur une case eau, si il en existe une
+                    let rndmP1 = listeEauP1[Math.floor(Math.random() * listeEauP1.length)];
+                    animal.position = rndmP1;
+                }
+                if(perception = 1){ //Si je vois aucune case d'eau, je me déplace aléatoirement
+                    let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
+                    deplacementRndm();
+                }
+
+                //Cas ou l'animal a 2 de perceptions
+
+                if(cases[animal.position-26]){
+
+                }
+            }
+        }
+
+    //--------------------------------------------------------------------------------------------------------
+
     function jouerTour() { /*Fonction qui permet de gérer chaque tour, les déplacements..*/
     const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a gauche*/
     const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a droite*/
@@ -237,15 +344,15 @@ io.on("connection",(socket)=>{
                                 break;
                             }
                         case 5: //Cas ou il se déplace en bas a droite.
-                            if ((animal.position + 14) < 168 && (!bordureD.includes(animal.position))) {
-                                animal.position = animal.position + 14;
+                            if ((animal.position + 13) < 168 && (!bordureD.includes(animal.position))) {
+                                animal.position = animal.position + 13;
                                 animal.stats.eau -= 1;
                                 animal.stats.faim -= 0.50;
                                 break;
                             }
                         case 6: //Cas ou il se déplace en bas a gauche.
-                            if ((animal.position + 13) < 168 && (!bordureG.includes(animal.position))) {
-                                animal.position = animal.position + 13;
+                            if ((animal.position + 12) < 168 && (!bordureG.includes(animal.position))) {
+                                animal.position = animal.position + 12;
                                 animal.stats.eau -= 1;
                                 animal.stats.faim -= 0.50;
                                 break;
