@@ -15,16 +15,15 @@
 </head>
 <body>
     
-    <p><span id="messageConnexion"></span></p> <!--Message qui apparait lors de la connexion-->
+    <span id="messageConnexion"></span> <!--Message qui apparait lors de la connexion-->
+    
     
     <div class="grid text-center" style="--bs-rows: 3; --bs-columns: 3;">
         <div class="init">
             
-            <!--Initialisation du pseudo, entrée/sortie-->
-            <p id="veuillez">Veuillez saisir votre username, ainsi que vos statistiques!</p> 
+            <!--Initialisation du pseudo-->
+            <p id="veuillez">Avant de vous connecter, veuillez saisir votre username, le nombre de joueurs dans la partie (si vous etes l'hôte), ainsi que vos statistiques!</p> 
             <input type="text"  id="name">
-            <input type="button" value="Connexion" onclick="entree()">
-            <input type="button" value="Déconnexion" onclick="sortie()">
             
             <br>
             
@@ -75,7 +74,9 @@
             <br>
             <br>
             
+            <input type="button" value="Connexion" onclick="entree()">
             <input type="button" value="Commencer le jeu" onclick="commencerJeu()">
+            <input type="button" value="Déconnexion" onclick="sortie()">
         </div>
         
         <!--Damier-->
