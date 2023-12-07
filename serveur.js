@@ -11,9 +11,10 @@ const io =  require("socket.io")(server); /*bun*/
 /*Initialisation de la classe 'Animal'*/
 class Animal{
     constructor(p){
-        this.sexe= (Math.random() <0.5);
+        this.sexe= (Math.random() < 0.5);
         this.position=p;
         this.stats={eau:5,faim:5};
+        this.reproductionTours = 0;
     }
 
     enVie(){ /*Méthode*/
@@ -48,7 +49,7 @@ app.get("/:nomFichier",(request,response)=>{
     }
 });
 
-
+let tour = 0;
 let joueurs=[]; /*{name: name.value,repro:repro.value,precep: precep.value,force:force.value}*/
 let hote;
 let nbJmax=1;
@@ -172,7 +173,7 @@ io.on("connection",(socket)=>{
     async function commencerJeu (){ /*Fonction pour lancer le jeu*/
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
-            for(let i=0;i<10;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
+            for(let i=0;i<2;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
                 // console.log(index);
                 animaux[value.name].push(new Animal(positionTanieres[index]));
             }
@@ -272,7 +273,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
     }
 
     function deplacementBasDroite(animal,j){
-        if ((animal.position + 13) < 168 && (!bordureD.includes(animal.position)) && (caseVide(animal.position+12,j) || estTaniere(animal.position+12))) {
+        if ((animal.position + 13) < 168 && (!bordureD.includes(animal.position)) && (caseVide(animal.position+13,j) || estTaniere(animal.position+13))) {
             animal.position = animal.position + 13;
             animal.stats.eau -= 1;
             animal.stats.faim -= 0.50;
@@ -945,12 +946,13 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
                 }
         }
 
-        let peutReproduire = (j) =>{
+        let peutReproduire = (j, t) =>{
+            let reproduction = false;
             let nbMales=0;
             let nbFemelles=0;
             let positionT=0;
             animaux[j.name].forEach((element,index)=>{
-                if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6){
+                if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6 && element.reproductionTours === 0){
                     if(element.sexe) ++nbMales;
                     else ++nbFemelles;
                     positionT=element.position;
@@ -958,7 +960,16 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
             });
             for(let i=0;i<Math.min(nbMales,nbFemelles)*j.repro;++i){
                 animaux[j.name].push(new Animal(positionT));
+                reproduction = true;
             }
+
+            animaux[j.name].forEach((element) => {
+                if (reproduction && element.reproductionTours === 0 && cases[element.position] === "taniere") { //Si il y a eu un enfant dans la taniere, met a 5 element reproduction
+                    element.reproductionTours = 5;
+                } else if(element.reproductionTours > 0){
+                    element.reproductionTours --;
+                }
+            });
         }
         
         let bagarre = (j)=>{
@@ -1001,6 +1012,8 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
             if (animaux[value.name]) {
                 animaux[value.name].forEach((animal) => {
 
+                    tour++;
+
                     if(animal.stats.eau >= 6 && animal.stats.faim > 6){
                         deplacementTanierePlusProche(value, animal);
                     }
@@ -1024,8 +1037,8 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
                         }
                     }
                     // genre quelque part par là
-                    bagarre(value)
-                    peutReproduire(value)
+                    bagarre(value);
+                    peutReproduire(value, tour);
                 });
             } else {
                 console.log("animaux[value.name] est pas dÃ©fini");
