@@ -62,7 +62,7 @@ let terrain = {"roche":84,"prairie": 59,"eau":26}; /*~50% ~35% ~15%*/
 let typeTerrain = ["roche","prairie","eau","taniere"];
 
 /*Position des tanières sur le damier*/
-let positionTanieres = [6,77,88,159];
+let positionTanieres = [6,78,90,162];
 
 /*Socket*/
 io.on("connection",(socket)=>{
@@ -173,6 +173,7 @@ io.on("connection",(socket)=>{
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
             for(let i=0;i<1;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
+                // console.log(index);
                 animaux[value.name].push(new Animal(positionTanieres[index]));
             }
         });
