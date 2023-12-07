@@ -11,7 +11,7 @@ const io =  require("socket.io")(server); /*bun*/
 /*Initialisation de la classe 'Animal'*/
 class Animal{
     constructor(p){
-        this.sexe=false;
+        this.sexe= (randomvalue <0.5);
         this.position=p;
         this.stats={eau:5,faim:5};
     }
@@ -224,7 +224,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
       };
 
     const estTaniere = (p)=>{
-        cases[p]=="taniere";
+        return cases[p]=="taniere";
     };
 
     function deplacementHautGauche(animal,j){
@@ -945,6 +945,54 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
                 }
         }
 
+        let peutReproduire = (j) =>{
+            let nbMales=0;
+            let nbFemelles=0;
+            let positionT=0;
+            animaux[j.name].forEach((element,index)=>{
+                if(cases[element.position]=="taniere"){
+                    if(element.sexe) ++nbMales;
+                    else ++nbFemelles;
+                }
+            });
+            for(let i=0;i<min(nbMales,nbFemelles)*j.repro;++i){
+                animaux[j.name].push(Animal(positionT));
+            }
+        }
+        
+        let bagarre = (j)=>{
+            // j c'est un joueur donnée
+            let nomJoueurSansJ = [];
+            joueurs.forEach((element,index) =>{
+                if(j.name!=element.name) nomJoueurSansJ.push(element.name);
+            });
+            // pour tous les animaux du J
+            animaux[j.name].forEach((animalJ,indexJ)=>{
+            
+                // on regarde pour tous les autres animaux des autres joueurs
+                nomJoueurSansJ.forEach((nom,indN)=>{
+                    animaux[nom].forEach((ani,ida)=>{
+                        // si les 2 animaux sont sur la même case
+                        if(animalJ.position==ani.position){
+                            // si l'animal du J est plus fort alors il pousse l'autre animal
+                            let listeDirection = [deplacementHautGauche, deplacementHautDroite, deplacementGauche, deplacementDroite, deplacementBasGauche, deplacementBasDroite] //liste qui contient toutes les fonctions de déplacements
+                            let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
+                            if(animalJ.stats.force > ani.stats.force){
+                            let jperdant;
+                                joueurs.forEach((element,indew)=>{
+                                    if(element.name==nom) jperdant = element;
+                                });    
+                                deplacementRndm(ani,jperdant);
+                            }
+                            else // si l'autre pousse
+                                deplacementRndm(animalJ,j);
+                            
+                        }
+                    });
+                });
+            });
+        };
+
     //--------------------------------------------------------------------------------------------------------
 
     function jouerTour() { /*Fonction qui permet de gérer chaque tour, les déplacements..*/
@@ -974,7 +1022,9 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
                             animal.stats.eau = 10;
                         }
                     }
-                
+                    // genre quelque part par là
+                    bagarre(value)
+                    peutReproduire(value)
                 });
             } else {
                 console.log("animaux[value.name] est pas dÃ©fini");
