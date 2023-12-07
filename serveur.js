@@ -13,7 +13,10 @@ class Animal{
     constructor(p){
         this.sexe= (Math.random() < 0.5);
         this.position=p;
-        this.stats={eau:5,faim:5};
+        this.stats = {
+            eau: 2 + Math.random() * 3.5,  // Génère un nombre entre 2 et 5.5
+            faim: 2 + Math.random() * 3.5  // Génère un nombre entre 2 et 5.5
+        };
         this.reproductionTours = 0;
     }
 
@@ -173,7 +176,7 @@ io.on("connection",(socket)=>{
     async function commencerJeu (){ /*Fonction pour lancer le jeu*/
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
-            for(let i=0;i<2;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
+            for(let i=0;i<5;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
                 // console.log(index);
                 animaux[value.name].push(new Animal(positionTanieres[index]));
             }
@@ -215,12 +218,10 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
     };*/
 
     const caseVide = (c, j) => {
-        // Use Array.some instead of Array.forEach
         const isPositionOccupied = animaux[j.name].some((animal) => {
             return animal.position === c;
         });
         
-        // Return the result of the condition
         return !isPositionOccupied;
         };
 
@@ -278,6 +279,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
             animal.stats.eau -= 1;
             animal.stats.faim -= 0.50;
         }else resteSurPlace(animal);
+        
     }
 
     function resteSurPlace(animal){
@@ -731,7 +733,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
 
     function deplacementTanierePlusProche(joueur, animal){joueur
             let perception  = joueur.precep //stats a ajouter dans la classe animale pour pouvoir witch dessus
-            let listeDirection = [deplacementPrairiePlusProche, deplacementEauPlusProche] //liste qui contient toutes les fonctions de déplacements
+            let listeDirection = [deplacementHautGauche, deplacementHautDroite, deplacementGauche, deplacementDroite, deplacementBasGauche, deplacementBasDroite] //liste qui contient toutes les fonctions de déplacements
             let listeTaniereP1 = [];
             let d = false;
         
@@ -940,7 +942,7 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
         
                     else if(d == false){ //Si je vois aucune case d'taniere, je me déplace aléatoirement
                         let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
-                        deplacementRndm(joueur, animal);
+                        deplacementRndm(animal, joueur);
                         d = true;
                     }
                 }
@@ -1014,11 +1016,11 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
 
                     tour++;
 
-                    if(animal.stats.eau >= 6 && animal.stats.faim > 6){
+                    if(animal.stats.eau >= 6 && animal.stats.faim >= 6){
                         deplacementTanierePlusProche(value, animal);
                     }
 
-                    else if(animal.stats.faim > 8){
+                    else if(animal.stats.eau <= animal.stats.faim){
                         deplacementEauPlusProche(value, animal);
                     }
                     else{
