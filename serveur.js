@@ -216,15 +216,15 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
     const caseVide = (c, j) => {
         // Use Array.some instead of Array.forEach
         const isPositionOccupied = animaux[j.name].some((animal) => {
-          return animal.position === c;
+            return animal.position === c;
         });
-      
+        
         // Return the result of the condition
         return !isPositionOccupied;
-      };
+        };
 
     const estTaniere = (p)=>{
-        cases[p]=="taniere";
+        return cases[p] === "taniere";
     };
 
     function deplacementHautGauche(animal,j){
