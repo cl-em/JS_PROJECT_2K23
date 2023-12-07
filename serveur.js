@@ -11,7 +11,7 @@ const io =  require("socket.io")(server); /*bun*/
 /*Initialisation de la classe 'Animal'*/
 class Animal{
     constructor(p){
-        this.sexe= (randomvalue <0.5);
+        this.sexe= (Math.random() <0.5);
         this.position=p;
         this.stats={eau:5,faim:5};
     }
@@ -172,7 +172,7 @@ io.on("connection",(socket)=>{
     async function commencerJeu (){ /*Fonction pour lancer le jeu*/
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
-            for(let i=0;i<2;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
+            for(let i=0;i<10;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
                 // console.log(index);
                 animaux[value.name].push(new Animal(positionTanieres[index]));
             }
@@ -950,13 +950,14 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
             let nbFemelles=0;
             let positionT=0;
             animaux[j.name].forEach((element,index)=>{
-                if(cases[element.position]=="taniere"){
+                if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6){
                     if(element.sexe) ++nbMales;
                     else ++nbFemelles;
+                    positionT=element.position;
                 }
             });
-            for(let i=0;i<min(nbMales,nbFemelles)*j.repro;++i){
-                animaux[j.name].push(Animal(positionT));
+            for(let i=0;i<Math.min(nbMales,nbFemelles)*j.repro;++i){
+                animaux[j.name].push(new Animal(positionT));
             }
         }
         
