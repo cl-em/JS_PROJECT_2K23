@@ -2,14 +2,13 @@ body{
     background-image: url('http://localhost:8888/lol.png');
     background-repeat: no-repeat;
     background-size: cover;
+    overflow: hidden;
 }
 
 .main{
     display: flex;
     flex-direction: row;
     align-items: stretch;
-
-
 }
 
 .damier{
@@ -30,7 +29,7 @@ body{
 
 .init{
     text-align: center;
-    margin:70px;
+    margin:40px;
 
 }
 
