@@ -35,21 +35,11 @@ app.get('/', (request, response) => {
     response.sendFile('index.html', {root: __dirname});
 });
 
-// permet au client de récupérer les fichiers dont il a besoin
-// les fichiers dont il a besoin sont mit dans une liste pour évité qu'il accède à n'importe quel fichier
-
-let fileList = ["hex.js",
-    "index.html",
-    "lol.png",
-    "socket.js",
-    "animaux.js",
-    "style.css"];
 
 app.get("/:nomFichier",(request,response)=>{
     let file = request.params.nomFichier;
-    if(fileList.includes(file)){
         response.sendFile(file,{root:__dirname});
-    }
+
 });
 
 let tour = 0;
@@ -86,11 +76,13 @@ io.on("connection",(socket)=>{
 
     // à l'entrée on vérifie s'il y a pas trop de joueur et si il n'y a pas hôte le nouveau joueur le devient
     socket.on("entree",(data)=>{
+        // data {name,repro,precep,force}
         if(nbJmax<=joueurs.length){
             socket.emit("msgserv","trop de joueurs");
             return ;
         }
         data["couleur"]=listeCouleurs[joueurs.length];
+        // ajout de la couleur du joueurs 
         joueurs.push(data);
         
         if(hote==null){
@@ -205,8 +197,8 @@ io.on("connection",(socket)=>{
 
     //------------------------------------------------------------------------------------------------------
 
-const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a droite*/
-const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a gauche*/
+    const bordureD = Array.from({ length: 13 }, (_, index) => 12 + 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a droite*/
+    const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste composée de l'ensemble des coordonnées des hexagones qui se situent a gauche*/
 
     /*const caseVide= (c,j) => {
         animaux[j.name].forEach((animal,index)=>{
@@ -948,64 +940,64 @@ const bordureG = Array.from({ length: 13 }, (_, index) => 13 * index); /*Liste c
                 }
         }
 
-        let peutReproduire = (j, t) =>{
-            let reproduction = false;
-            let nbMales=0;
-            let nbFemelles=0;
-            let positionT=0;
-            animaux[j.name].forEach((element,index)=>{
-                if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6 && element.reproductionTours === 0){
-                    if(element.sexe) ++nbMales;
-                    else ++nbFemelles;
-                    positionT=element.position;
-                }
-            });
-            for(let i=0;i<Math.min(nbMales,nbFemelles)*j.repro;++i){
-                animaux[j.name].push(new Animal(positionT));
-                reproduction = true;
+    let peutReproduire = (j, t) =>{
+        let reproduction = false;
+        let nbMales=0;
+        let nbFemelles=0;
+        let positionT=0;
+        animaux[j.name].forEach((element,index)=>{
+            if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6 && element.reproductionTours === 0){
+                if(element.sexe) ++nbMales;
+                else ++nbFemelles;
+                positionT=element.position;
             }
-
-            animaux[j.name].forEach((element) => {
-                if (reproduction && element.reproductionTours === 0 && cases[element.position] === "taniere") { //Si il y a eu un enfant dans la taniere, met a 5 element reproduction
-                    element.reproductionTours = 5;
-                } else if(element.reproductionTours > 0){
-                    element.reproductionTours --;
-                }
-            });
+        });
+        for(let i=0;i<Math.min(nbMales,nbFemelles)*j.repro;++i){
+            animaux[j.name].push(new Animal(positionT));
+            reproduction = true;
         }
+
+        animaux[j.name].forEach((element) => {
+            if (reproduction && element.reproductionTours === 0 && cases[element.position] === "taniere") { //Si il y a eu un enfant dans la taniere, met a 5 element reproduction
+                element.reproductionTours = 5;
+            } else if(element.reproductionTours > 0){
+                element.reproductionTours --;
+            }
+        });
+    }
         
-        let bagarre = (j)=>{
-            // j c'est un joueur donnée
-            let nomJoueurSansJ = [];
-            joueurs.forEach((element,index) =>{
-                if(j.name!=element.name) nomJoueurSansJ.push(element.name);
-            });
-            // pour tous les animaux du J
-            animaux[j.name].forEach((animalJ,indexJ)=>{
-            
-                // on regarde pour tous les autres animaux des autres joueurs
-                nomJoueurSansJ.forEach((nom,indN)=>{
-                    animaux[nom].forEach((ani,ida)=>{
-                        // si les 2 animaux sont sur la même case
-                        if(animalJ.position==ani.position){
-                            // si l'animal du J est plus fort alors il pousse l'autre animal
-                            let listeDirection = [deplacementHautGauche, deplacementHautDroite, deplacementGauche, deplacementDroite, deplacementBasGauche, deplacementBasDroite] //liste qui contient toutes les fonctions de déplacements
-                            let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
-                            if(animalJ.stats.force > ani.stats.force){
-                            let jperdant;
-                                joueurs.forEach((element,indew)=>{
-                                    if(element.name==nom) jperdant = element;
-                                });    
-                                deplacementRndm(ani,jperdant);
-                            }
-                            else // si l'autre pousse
-                                deplacementRndm(animalJ,j);
-                            
+    let bagarre = (j)=>{
+        // j c'est un joueur donnée
+        let nomJoueurSansJ = [];
+        joueurs.forEach((element,index) =>{
+            if(j.name!=element.name) nomJoueurSansJ.push(element.name);
+        });
+        // pour tous les animaux du J
+        animaux[j.name].forEach((animalJ,indexJ)=>{
+        
+            // on regarde pour tous les autres animaux des autres joueurs
+            nomJoueurSansJ.forEach((nom,indN)=>{
+                animaux[nom].forEach((ani,ida)=>{
+                    // si les 2 animaux sont sur la même case
+                    if(animalJ.position==ani.position){
+                        // si l'animal du J est plus fort alors il pousse l'autre animal
+                        let listeDirection = [deplacementHautGauche, deplacementHautDroite, deplacementGauche, deplacementDroite, deplacementBasGauche, deplacementBasDroite] //liste qui contient toutes les fonctions de déplacements
+                        let deplacementRndm = listeDirection[Math.floor(Math.random() * listeDirection.length)];
+                        if(animalJ.stats.force > ani.stats.force){
+                        let jperdant;
+                            joueurs.forEach((element,indew)=>{
+                                if(element.name==nom) jperdant = element;
+                            });    
+                            deplacementRndm(ani,jperdant);
                         }
-                    });
+                        else // si l'autre pousse
+                            deplacementRndm(animalJ,j);
+                        
+                    }
                 });
             });
-        };
+        });
+    };
 
     //--------------------------------------------------------------------------------------------------------
 

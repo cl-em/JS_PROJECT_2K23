@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="./test.css" rel="stylesheet" >
+    <title>+/-</title>
+</head>
+<body>
+
+    <p>Il vous reste  <span id="ptsstats">15</span> points de statistiques</p>
+
+    <br>
+    <!-- No1 -->
+    <button id="sub1" class=''>-</button>
+    <input class="input__field" type="text" id="nbr1"  value="0">
+    <button id="add1" class=''>+</button>
+
+    <br>
+
+    <!-- No2 -->
+    <button id="sub2" class=''>-</button>
+    <input type="text" id="nbr2" readonly="" value="0">
+    <button id="add2" class=''>+</button>
+
+    <br>
+
+    <!-- No3 -->
+    <button id="sub3" class=''>-</button>
+    <input type="text" id="nbr3" readonly="" value="0">
+    <button id="add3" class=''>+</button>
+
+    <input type="button" class="brochet" value="zizi" id="b1">
+    <input type="button" class="brochet" value="zizi" id="b2">
+    <input type="button" class="brochet" value="zizi" id="b3">
+    <input type="button" class="brochet" value="zizi" id="b4">
+    <input type="button" class="brochet" value="zizi" id="b5">
+
+    <script type="text/javascript">
+
+        let PTSSTATS = 15;
+
+        function updateStats() {
+            document.getElementById('ptsstats').textContent = PTSSTATS;
+        }
+        
+
+        let addS = [];
+        let subS = [];
+        let nbrS = [];
+
+        for(let i=1;i<4;++i){
+            addS.push(document.getElementById("add"+i));
+            subS.push(document.getElementById("sub"+i));
+            nbrS.push(document.getElementById("nbr"+i));
+        }
+
+        addS.forEach((element,index)=>{
+            element.addEventListener("click",()=>{
+                if(PTSSTATS>0 && parseInt(nbrS[index].value)<10){
+                nbrS[index].value = parseInt(nbrS[index].value) + 1;
+                PTSSTATS--;
+                updateStats();
+                }
+            });
+        });
+
+        subS.forEach((element,index)=>{
+            element.addEventListener("click",()=>{
+                if((parseInt(nbrS[index].value) - 1)>=0){
+                nbrS[index].value = parseInt(nbrS[index].value) - 1;
+                PTSSTATS++;
+                updateStats();
+            }
+            })
+        });
+
+        updateStats();
+
+        let b = document.getElementsByClassName("brochet");
+        for(let i=0;i<b.length;++i) {
+            b[0].remove()
+            console.log(i);
+        }
+        
+        for(let i=0;i<b.length;++i) {
+            b[0].remove()
+            console.log(i);
+        }
+
+    </script>
+
+<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">
+    <!-- Définir un carré -->
+    <rect width="200" height="200" fill="#ccc" />
+  
+    <!-- Placer une image à l'intérieur du carré -->
+    <image
+      href="https://cdn.discordapp.com/attachments/779369451031887882/1187063459876192396/brochet_ney.png"
+      x="50"  
+      y="50"  
+      width="100"  
+      height="100" 
+    />
+  </svg>
+  
+</body>
+</html>

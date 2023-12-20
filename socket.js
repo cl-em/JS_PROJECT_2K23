@@ -61,6 +61,12 @@ socket.on("getJoueurs",(data)=>{
 // colorie damier en fonction du type de la case (roche,prairie,eau,taniere)
 let colors = {"roche":"#AAAAAA","prairie":"#86DC3D","eau":"#1AA7EC","taniere":"#582900"}
 const resetDamier = () =>{
+    let b = document.getElementsByClassName("brochet");
+    for(let i=0;i<b.length;++i) {
+        b[0].remove()
+        // console.log(i);
+    }
+
     damier.forEach((element,index)=>{
         d3.select("#h"+index).attr("fill",colors[element]);
     });
@@ -83,12 +89,24 @@ socket.on("commencerJeu",(data)=>{
 // permet de jouer un tour, récupère le dictionnaire des animaux mis à jour et met en couleur une case où un animal se trouve dessus
 // chaque joueur a une couleur différente
 socket.on("jouerTour",(data)=>{
+    // dico key : nom des joueurs, value : liste de Aminal
 
     resetDamier();
     animaux = data;
     joueurs.forEach((value)=>{
+    // jooueurs liste avec des joueurs {name,repro,precep,force,couleur} // couelur de l'animal
         data[value.name].forEach((animal)=>{
-            d3.select("#h"+animal.position).attr("fill",value.couleur);
+            //d3.select("#h"+animal.position).attr("fill",value.couleur);
+            let bbox = document.getElementById("h"+animal.position).getBBox();
+            // console.log(hex);
+            let damier = document.getElementById("tablier");
+            damier.innerHTML+=`<image class="brochet"
+                                href="https://cdn.discordapp.com/attachments/779369451031887882/1187063459876192396/brochet_ney.png"
+                                x="${bbox.x}"  
+                                y="${bbox.y-20}"  
+                                width="100"  
+                                height="100" 
+                            />`;
         });
     });
 });
