@@ -954,7 +954,7 @@ io.on("connection",(socket)=>{
         let nbFemelles=0;
         let positionT=0;
         animaux[j.name].forEach((element,index)=>{
-            if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6  && element.reproductionTours>=5){
+            if(cases[element.position] == "taniere" && element.stats.eau > 3.5 && element.stats.faim > 3.5 &&  element.reproductionTours >= 5){
                 if(element.sexe){
                     // si l'animal a assez de reproduire il est ajouter à la listes des animaux pouvant se reproduire
                     // et sa reproduction passe à 0;
@@ -966,7 +966,7 @@ io.on("connection",(socket)=>{
                 element.reproductionTours=0;
             }else{
                 // si il n'a 5 de reproduction, on lui ajoute 1 à chaque tour
-                ++element.reproductionTours;
+                element.reproductionTours+=1;
             }
         });
         // ajout des animaux
