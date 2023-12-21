@@ -10,8 +10,9 @@ const io =  require("socket.io")(server); /*bun*/
 
 /*Initialisation de la classe 'Animal'*/
 class Animal{
-    constructor(p){
-        this.sexe= (Math.random() < 0.5);
+    constructor(p,s){
+        // p : position , s : sexe 
+        this.sexe= s;
         this.position=p;
         this.stats = {
             eau: 2 + Math.random() * 3.5,  // Génère un nombre entre 2 et 5.5
@@ -176,7 +177,8 @@ io.on("connection",(socket)=>{
             animaux[value.name]=[];
             for(let i=0;i<5;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
                 // console.log(index);
-                animaux[value.name].push(new Animal(positionTanieres[index]));
+                animaux[value.name].push(new Animal(positionTanieres[index],1)); // ajout d'un male
+                animaux[value.name].push(new Animal(positionTanieres[index],0)); // et d'une femelle    
             }
         });
     io.emit("commencerJeu",animaux);
@@ -947,23 +949,24 @@ io.on("connection",(socket)=>{
         }
 
     let peutReproduire = (j, t) =>{
+        // j c'est un joueur donné
         let nbMales=0;
         let nbFemelles=0;
         let positionT=0;
         animaux[j.name].forEach((element,index)=>{
-            if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6  && element.peutReproduire>=5){
+            if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6  && element.reproductionTours>=5){
                 if(element.sexe){
                     // si l'animal a assez de reproduire il est ajouter à la listes des animaux pouvant se reproduire
                     // et sa reproduction passe à 0;
                     ++nbMales;
-                } else if( element.peutReproduire>=5) {
+                } else if( element.reproductionTours>=5) {
                     ++nbFemelles;
                     positionT=element.position;
                 }
-                element.peutReproduire=0;
+                element.reproductionTours=0;
             }else{
                 // si il n'a 5 de reproduction, on lui ajoute 1 à chaque tour
-                ++element.peutReproduire;
+                ++element.reproductionTours;
             }
         });
         // ajout des animaux
