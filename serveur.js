@@ -16,7 +16,7 @@ class Animal{
         this.position=p;
         this.stats = {
             eau: 5,//2 + Math.random() * 3.5,  // Génère un nombre entre 2 et 5.5
-            faim: 5 + Math.random() * 3.5  // Génère un nombre entre 2 et 5.5
+            faim: 5 // + Math.random() * 3.5  // Génère un nombre entre 2 et 5.5
         };
         // stat est pas défaut à 5, à 5 ils peuvent se reproduire
         this.reproductionTours = 5;
@@ -966,7 +966,7 @@ io.on("connection",(socket)=>{
         });
         // ajout des animaux
         for(let i=0;i<Math.min(nbMales,nbFemelles)*j.repro;++i){
-            animaux[j.name].push(new Animal(positionT));
+            animaux[j.name].push(new Animal(positionT,(Math.random() < 0.5)));
         }
 
         

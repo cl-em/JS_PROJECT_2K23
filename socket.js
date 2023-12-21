@@ -106,11 +106,11 @@ socket.on("jouerTour",(data)=>{
             // console.log(hex);
             let damier = document.getElementById("tablier");
             damier.innerHTML+=`<image class="brochet"
-                                href="https://cdn.discordapp.com/attachments/779369451031887882/1187063459876192396/brochet_ney.png"
-                                x="${bbox.x}"  
-                                y="${bbox.y-20}"  
-                                width="100"  
-                                height="100" 
+                                href="https://cdn.discordapp.com/attachments/1053644743009112154/1187396592723038450/rongeur1.png?ex=6596bc40&is=65844740&hm=96a717f1e769abd058976943512275105b9454b676d4f9561ec87f8a77f659a1&"
+                                x="${bbox.x-5}"  
+                                y="${bbox.y-6}"  
+                                width="50"  
+                                height="60" 
                             />`;
         });
     });
