@@ -81,7 +81,21 @@ const resetDamier = () =>{
 socket.on("entree",(cases)=>{
     damier = cases;
     for(let i=0;i<cases.length;++i){
-        d3.select("#h"+i).attr("fill",colors[cases[i]]);
+        if(cases[i]=="taniere"){
+            let bbox = document.getElementById("h"+i).getBBox();
+            let damier = document.getElementById("tablier");
+            damier.innerHTML+=`<image class="taniere"
+                                href = http://localhost:8888/taniere.png
+                                x="${bbox.x-5}"
+                                y="${bbox.y-6}"
+                                width="50"  
+                                height="60" 
+                            />`
+            
+
+        }else{
+            d3.select("#h"+i).attr("fill",colors[cases[i]]);
+        }
     }
 });
 

@@ -131,11 +131,16 @@ io.on("connection",(socket)=>{
             // listec.splice(88, 1);
             // listec.splice(159,1);
             
-            cases[19]="taniere";
-            cases[79]="taniere";
-            cases[89]="taniere";
-            cases[149]="taniere";
         }
+        let nbJoueurs= joueurs.length;
+        if(nbJoueurs>=1)
+            cases[19]="taniere";
+        if(nbJoueurs>=2)
+            cases[79]="taniere";
+        if(nbJoueurs>=3)
+            cases[89]="taniere";
+        if(nbJoueurs>=4)
+            cases[149]="taniere";
         
         socket.emit("entree",cases);
         io.emit("getJoueurs",joueurs);
@@ -954,10 +959,10 @@ io.on("connection",(socket)=>{
                     // si l'animal a assez de reproduire il est ajouter à la listes des animaux pouvant se reproduire
                     // et sa reproduction passe à 0;
                     ++nbMales;
-                } else if( element.reproductionTours>=5) {
+                } else{
                     ++nbFemelles;
-                    positionT=element.position;
                 }
+                positionT=element.position;
                 element.reproductionTours=0;
             }else{
                 // si il n'a 5 de reproduction, on lui ajoute 1 à chaque tour
@@ -965,7 +970,11 @@ io.on("connection",(socket)=>{
             }
         });
         // ajout des animaux
+        if(nbFemelles || nbMales)
+            console.log(nbFemelles,nbMales);
+        
         for(let i=0;i<Math.min(nbMales,nbFemelles)*j.repro;++i){
+            console.log("animal ajoute");
             animaux[j.name].push(new Animal(positionT,(Math.random() < 0.5)));
         }
 
