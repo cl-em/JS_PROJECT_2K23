@@ -17,7 +17,8 @@ class Animal{
             eau: 2 + Math.random() * 3.5,  // Génère un nombre entre 2 et 5.5
             faim: 2 + Math.random() * 3.5  // Génère un nombre entre 2 et 5.5
         };
-        this.reproductionTours = 0;
+        // stat est pas défaut à 5, à 5 ils peuvent se reproduire
+        this.reproductionTours = 5;
     }
 
     enVie(){ /*Méthode*/
@@ -128,12 +129,17 @@ io.on("connection",(socket)=>{
             // listec.splice(77,1);
             // listec.splice(88, 1);
             // listec.splice(159,1);
-            
-            cases[6]="taniere";
-            cases[78]="taniere";
-            cases[90]="taniere";
-            cases[162]="taniere";
         }
+            let nbJoueur=joueurs.length;
+            if(nbJoueur>=1)
+                cases[6]="taniere";
+            if(nbJoueur>=2)
+                cases[78]="taniere";
+            if(nbJoueur>=3)
+                cases[90]="taniere";
+            if(nbJoueur>=4)
+                cases[162]="taniere";
+        
         
         socket.emit("entree",cases);
         io.emit("getJoueurs",joueurs);
@@ -941,29 +947,31 @@ io.on("connection",(socket)=>{
         }
 
     let peutReproduire = (j, t) =>{
-        let reproduction = false;
         let nbMales=0;
         let nbFemelles=0;
         let positionT=0;
         animaux[j.name].forEach((element,index)=>{
-            if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6 && element.reproductionTours === 0){
-                if(element.sexe) ++nbMales;
-                else ++nbFemelles;
-                positionT=element.position;
+            if(cases[element.position]=="taniere" && element.stats.eau>=6 && element.stats.faim>=6  && element.peutReproduire>=5){
+                if(element.sexe){
+                    // si l'animal a assez de reproduire il est ajouter à la listes des animaux pouvant se reproduire
+                    // et sa reproduction passe à 0;
+                    ++nbMales;
+                } else if( element.peutReproduire>=5) {
+                    ++nbFemelles;
+                    positionT=element.position;
+                }
+                element.peutReproduire=0;
+            }else{
+                // si il n'a 5 de reproduction, on lui ajoute 1 à chaque tour
+                ++element.peutReproduire;
             }
         });
+        // ajout des animaux
         for(let i=0;i<Math.min(nbMales,nbFemelles)*j.repro;++i){
             animaux[j.name].push(new Animal(positionT));
-            reproduction = true;
         }
 
-        animaux[j.name].forEach((element) => {
-            if (reproduction && element.reproductionTours === 0 && cases[element.position] === "taniere") { //Si il y a eu un enfant dans la taniere, met a 5 element reproduction
-                element.reproductionTours = 5;
-            } else if(element.reproductionTours > 0){
-                element.reproductionTours --;
-            }
-        });
+        
     }
         
     let bagarre = (j)=>{

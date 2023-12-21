@@ -37,7 +37,9 @@ function creerTablier(nblignes,nbcolonnes){ //Fonction permettant de créer le t
             .append("path")
             .attr("d",d)
             .attr("stroke","black").attr("fill","white")
-            .attr("id","h"+(ligne*nblignes+colonne));
+            .attr("id","h"+(ligne*nblignes+colonne))
+            //emit pour changer la case, envoie l'id de la case
+            .on("click",()=>{socket.emit("changeCase",ligne*nblignes+colonne)});
         }
     }
 }
