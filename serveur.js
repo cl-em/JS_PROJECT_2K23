@@ -15,8 +15,8 @@ class Animal{
         this.sexe= s;
         this.position=p;
         this.stats = {
-            eau: 2 + Math.random() * 3.5,  // Génère un nombre entre 2 et 5.5
-            faim: 2 + Math.random() * 3.5  // Génère un nombre entre 2 et 5.5
+            eau: 5,//2 + Math.random() * 3.5,  // Génère un nombre entre 2 et 5.5
+            faim: 5 + Math.random() * 3.5  // Génère un nombre entre 2 et 5.5
         };
         // stat est pas défaut à 5, à 5 ils peuvent se reproduire
         this.reproductionTours = 5;
@@ -58,7 +58,7 @@ let terrain = {"roche":84,"prairie": 59,"eau":26}; /*~50% ~35% ~15%*/
 let typeTerrain = ["roche","prairie","eau","taniere"];
 
 /*Position des tanières sur le damier*/
-let positionTanieres = [6,78,90,162];
+let positionTanieres = [19,79,89,149];
 
 /*Socket*/
 io.on("connection",(socket)=>{
@@ -130,17 +130,12 @@ io.on("connection",(socket)=>{
             // listec.splice(77,1);
             // listec.splice(88, 1);
             // listec.splice(159,1);
+            
+            cases[19]="taniere";
+            cases[79]="taniere";
+            cases[89]="taniere";
+            cases[149]="taniere";
         }
-            let nbJoueur=joueurs.length;
-            if(nbJoueur>=1)
-                cases[6]="taniere";
-            if(nbJoueur>=2)
-                cases[78]="taniere";
-            if(nbJoueur>=3)
-                cases[90]="taniere";
-            if(nbJoueur>=4)
-                cases[162]="taniere";
-        
         
         socket.emit("entree",cases);
         io.emit("getJoueurs",joueurs);
@@ -184,7 +179,7 @@ io.on("connection",(socket)=>{
     io.emit("commencerJeu",animaux);
 
         /*Déroulement du jeu*/
-        for(let i=0;i<50;++i){
+        for(let i=0;i<1000;++i){
             jouerTour();
             joueurs.forEach((joueur,index)=>{
                 animaux[joueur.name].forEach((animal,index)=>{
@@ -309,22 +304,22 @@ io.on("connection",(socket)=>{
         else{
                 //Cas ou l'animal a 1 de perception, si il voit seulement les cases autour de lui
 
-                if((cases[animal.position-13]=="eau") && perception>0) //Ajoute ssi en haut a gauche c'est de l'eau
+                if((cases[animal.position-13]=="eau") && perception>0 && (caseVide(animal.position-13,joueur))) //Ajoute ssi en haut a gauche c'est de l'eau
                     listeEauP1.push(deplacementHautGauche);
 
-                if((cases[animal.position-12]=="eau") && perception>0) //Ajoute ssi en haut a droite c'est de l'eau
+                if((cases[animal.position-12]=="eau") && perception>0 && (caseVide(animal.position-12,joueur))) //Ajoute ssi en haut a droite c'est de l'eau
                     listeEauP1.push(deplacementHautDroite);
 
-                if((cases[animal.position-1]=="eau") && perception>0) //Ajoute ssi a gauche c'est de l'eau
+                if((cases[animal.position-1]=="eau") && perception>0 && (caseVide(animal.position-1,joueur))) //Ajoute ssi a gauche c'est de l'eau
                     listeEauP1.push(deplacementGauche);
 
-                if((cases[animal.position+1]=="eau") && perception>0) //Ajoute ssi a droite c'est de l'eau
+                if((cases[animal.position+1]=="eau") && perception>0 && (caseVide(animal.position+1,joueur))) //Ajoute ssi a droite c'est de l'eau
                     listeEauP1.push(deplacementDroite);
 
-                if((cases[animal.position+12]=="eau") && perception>0) //Ajoute ssi en bas a gauche c'est de l'eau
+                if((cases[animal.position+12]=="eau") && perception>0 && (caseVide(animal.position+12,joueur))) //Ajoute ssi en bas a gauche c'est de l'eau
                     listeEauP1.push(deplacementBasGauche);
 
-                if((cases[animal.position+13]=="eau") && perception >0) //Ajoute ssi en bas a droite c'est de l'eau
+                if((cases[animal.position+13]=="eau") && perception >0 && (caseVide(animal.position+13,joueur))) //Ajoute ssi en bas a droite c'est de l'eau
                     listeEauP1.push(deplacementBasDroite);
 
                 if(listeEauP1.length > 0){ //Va aléatoirement sur une case eau, si il en existe une
@@ -526,22 +521,22 @@ io.on("connection",(socket)=>{
             else{
                     //Cas ou l'animal a 1 de perception, si il voit seulement les cases autour de lui
         
-                    if((cases[animal.position-13]=="prairie") && perception>0) //Ajoute ssi en haut a gauche c'est de l'prairie
+                    if((cases[animal.position-13]=="prairie") && perception>0 && (caseVide(animal.position-13,joueur))) //Ajoute ssi en haut a gauche c'est de l'prairie
                         listePrairieP1.push(deplacementHautGauche);
         
-                    if((cases[animal.position-12]=="prairie") && perception>0) //Ajoute ssi en haut a droite c'est de l'prairie
+                    if((cases[animal.position-12]=="prairie") && perception>0 && (caseVide(animal.position-12,joueur))) //Ajoute ssi en haut a droite c'est de l'prairie
                         listePrairieP1.push(deplacementHautDroite);
         
-                    if((cases[animal.position-1]=="prairie") && perception>0) //Ajoute ssi a gauche c'est de l'prairie
+                    if((cases[animal.position-1]=="prairie") && perception>0 && (caseVide(animal.position-1,joueur))) //Ajoute ssi a gauche c'est de l'prairie
                         listePrairieP1.push(deplacementGauche);
         
-                    if((cases[animal.position+1]=="prairie") && perception>0) //Ajoute ssi a droite c'est de l'prairie
+                    if((cases[animal.position+1]=="prairie") && perception>0 && (caseVide(animal.position+1,joueur))) //Ajoute ssi a droite c'est de l'prairie
                         listePrairieP1.push(deplacementDroite);
         
-                    if((cases[animal.position+12]=="prairie") && perception>0) //Ajoute ssi en bas a gauche c'est de l'prairie
+                    if((cases[animal.position+12]=="prairie") && perception>0 && (caseVide(animal.position+12,joueur))) //Ajoute ssi en bas a gauche c'est de l'prairie
                         listePrairieP1.push(deplacementBasGauche);
         
-                    if((cases[animal.position+13]=="prairie") && perception >0) //Ajoute ssi en bas a droite c'est de l'prairie
+                    if((cases[animal.position+13]=="prairie") && perception >0 && (caseVide(animal.position+13,joueur))) //Ajoute ssi en bas a droite c'est de l'prairie
                         listePrairieP1.push(deplacementBasDroite);
         
                     if(listePrairieP1.length > 0){ //Va aléatoirement sur une case prairie, si il en existe une
@@ -1019,7 +1014,7 @@ io.on("connection",(socket)=>{
 
                     tour++;
 
-                    if(animal.stats.eau >= 6 && animal.stats.faim >= 6){
+                    if(animal.stats.eau > 6 && animal.stats.faim > 6){
                         deplacementTanierePlusProche(value, animal);
                     }
 
