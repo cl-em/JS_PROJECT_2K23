@@ -61,11 +61,16 @@ socket.on("getJoueurs",(data)=>{
 // colorie damier en fonction du type de la case (roche,prairie,eau,taniere)
 let colors = {"roche":"#AAAAAA","prairie":"#86DC3D","eau":"#1AA7EC","taniere":"#582900"}
 const resetDamier = () =>{
+    let elementAsupprimer=[];
     let b = document.getElementsByClassName("brochet");
     for(let i=0;i<b.length;++i) {
-        b[0].remove()
+        elementAsupprimer.push(b[i]);
         // console.log(i);
     }
+
+    elementAsupprimer.forEach((element,index)=>{
+        element.remove();
+    });
 
     damier.forEach((element,index)=>{
         d3.select("#h"+index).attr("fill",colors[element]);

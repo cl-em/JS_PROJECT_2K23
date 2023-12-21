@@ -175,7 +175,7 @@ io.on("connection",(socket)=>{
     async function commencerJeu (){ /*Fonction pour lancer le jeu*/
         joueurs.forEach((value,index)=>{
             animaux[value.name]=[];
-            for(let i=0;i<5;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
+            for(let i=0;i<1;++i){ /*Permet de set le nombre d'animaux au spawn par joueurs*/
                 // console.log(index);
                 animaux[value.name].push(new Animal(positionTanieres[index],1)); // ajout d'un male
                 animaux[value.name].push(new Animal(positionTanieres[index],0)); // et d'une femelle    
