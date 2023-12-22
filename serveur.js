@@ -19,7 +19,7 @@ class Animal{
             faim: 3.5 // + Math.random() * 3.5  // Génère un nombre entre 2 et 5.5
         };
         // stat est pas défaut à 5, à 5 ils peuvent se reproduire
-        this.reproductionTours = 4;
+        this.reproductionTours = 0;
     }
 
     enVie(){ /*Méthode*/
@@ -43,6 +43,7 @@ app.get("/:nomFichier",(request,response)=>{
         response.sendFile(file,{root:__dirname});
 
 });
+
 
 let tour = 0;
 let joueurs=[]; /*{name: name.value,repro:repro.value,precep: precep.value,force:force.value}*/
@@ -142,7 +143,7 @@ io.on("connection",(socket)=>{
         if(nbJoueurs>=4)
             cases[149]="taniere";
         
-        socket.emit("entree",cases);
+        io.emit("entree",cases);
         io.emit("getJoueurs",joueurs);
     });
 
@@ -184,7 +185,8 @@ io.on("connection",(socket)=>{
     io.emit("commencerJeu",animaux);
 
         /*Déroulement du jeu*/
-        for(let i=0;i<1000;++i){
+        for(let i=0;i<50;++i){
+            
             jouerTour();
             joueurs.forEach((joueur,index)=>{
                 animaux[joueur.name].forEach((animal,index)=>{
@@ -196,6 +198,15 @@ io.on("connection",(socket)=>{
 
             await sleep(750);
         }
+        let maxAnimal=0;
+        let gagnant ="";
+        joueurs.forEach((joueur,index)=>{
+            if(animaux[joueur.name].length>maxAnimal){
+                gagnant=joueur.name;
+                maxAnimal = animaux[joueur.name];
+            }
+        });
+        io.emit("gagnant",gagnant);
     }
     function sleep(ms) { /*Fonction qui gère le délai entre les tours*/
         return new Promise((resolve) => {
@@ -512,7 +523,7 @@ io.on("connection",(socket)=>{
                     d = true;
                 }
             }
-        }
+    }
 
     function deplacementPrairiePlusProche(joueur, animal){
             let perception  = joueur.precep //stats a ajouter dans la classe animale pour pouvoir witch dessus
@@ -729,7 +740,7 @@ io.on("connection",(socket)=>{
                         d = true;
                     }
                 }
-        }
+    }
 
     function deplacementTanierePlusProche(joueur, animal){joueur
             let perception  = joueur.precep //stats a ajouter dans la classe animale pour pouvoir witch dessus
@@ -946,47 +957,48 @@ io.on("connection",(socket)=>{
                         d = true;
                     }
                 }
-        }
+    }
 
+    
     function peutReproduire(j, t) {
-    let nbMales = 0;
-    let nbFemelles = 0;
-    let male = false;
-    let femelle = false;
-    let positionT = 0;
-
-    animaux[j.name].forEach(function(element, index) {
-        // Vérifier si l'animal peut se reproduire
-        if (cases[element.position] == "taniere" && element.stats.eau > 3.5 && element.stats.faim > 3.5 &&  element.reproductionTours >= 5) {
-            if (element.sexe) {
-                // si l'animal est mâle
-                ++nbMales;
-                male = true;
+        let nbMales = 0;
+        let nbFemelles = 0;
+        let male = false;
+        let femelle = false;
+        let positionT = 0;
+        
+        animaux[j.name].forEach(function(element, index) {
+            // Vérifier si l'animal peut se reproduire
+            if (cases[element.position] == "taniere" && element.stats.eau > 3.5 && element.stats.faim > 3.5 &&  element.reproductionTours >= 5) {
+                if (element.sexe) {
+                    // si l'animal est mâle
+                    ++nbMales;
+                    male = true;
+                } else {
+                    // si l'animal est femelle
+                    ++nbFemelles;
+                    femelle = true;
+                    positionT = element.position;
+                }
             } else {
-                // si l'animal est femelle
-                ++nbFemelles;
-                femelle = true;
-                positionT = element.position;
-            }
-        } else {
-            // si l'animal ne peut pas se reproduire, incrémenter le compteur de tours de reproduction
-            ++element.reproductionTours;
-        }
-    });
-
-    if (male && femelle) {
-        animaux[j.name].forEach(function (element, index) {
-            if (element.position == positionT && element.reproductionTours >= 5) {
-                element.reproductionTours = 0;
+                // si l'animal ne peut pas se reproduire, incrémenter le compteur de tours de reproduction
+                ++element.reproductionTours;
             }
         });
-    }
-
-    for (let i = 0; i < Math.min(nbMales, nbFemelles) * j.repro; ++i) {
-        console.log("Nouvel animal créé !");
-        animaux[j.name].push(new Animal(positionT, (Math.random() < 0.5)));
-    }
-}
+    
+        if (male && femelle) {
+            animaux[j.name].forEach(function (element, index) {
+                if (cases[element.position] == "taniere" && element.reproductionTours >= 5) {
+                    element.reproductionTours = 0;
+                }
+            });
+        }
+        if(animaux[j.name].length<=15){
+            for (let i = 0; i < Math.min(nbMales, nbFemelles) * j.repro; ++i) {
+                animaux[j.name].push(new Animal(positionT, (Math.random() < 0.5)));
+            }
+        }
+    }   
 
         
     let bagarre = (j)=>{
@@ -1026,6 +1038,7 @@ io.on("connection",(socket)=>{
 
     function jouerTour() { /*Fonction qui permet de gérer chaque tour, les déplacements..*/
         joueurs.forEach((value, index) => {
+            // value : nom des joueurs
             if (animaux[value.name]) {
                 animaux[value.name].forEach((animal) => {
 

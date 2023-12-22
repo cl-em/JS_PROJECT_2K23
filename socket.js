@@ -49,7 +49,7 @@ socket.on("message",(data)=>{ /*Pour envoyer des gifs dans le chat __'*/
     }   
 });
 
-let joueurs;
+let joueurs=[];
 let animaux;
 let damier;
 
@@ -73,8 +73,25 @@ const resetDamier = () =>{
     });
 
     damier.forEach((element,index)=>{
-        d3.select("#h"+index).attr("fill",colors[element]);
+        if(element=="taniere"){
+            let bbox = document.getElementById("h"+index).getBBox();
+            let damier = document.getElementById("tablier");
+            damier.innerHTML+=`<image class="taniere"
+                                href = http://localhost:8888/taniere.png
+                                x="${bbox.x-5}"
+                                y="${bbox.y-6}"
+                                width="50"  
+                                height="60" 
+                            />`
+            
+
+        }else{
+            d3.select("#h"+index).attr("fill",colors[element]);
+        }
+        
     });
+
+
 }
 
 // permet de récupérer toutes les cases du damier et colorie le damier 
@@ -112,7 +129,7 @@ socket.on("jouerTour",(data)=>{
 
     resetDamier();
     animaux = data;
-    joueurs.forEach((value)=>{
+    joueurs.forEach((value,indexJ)=>{
     // jooueurs liste avec des joueurs {name,repro,precep,force,couleur} // couelur de l'animal
         data[value.name].forEach((animal)=>{
             //d3.select("#h"+animal.position).attr("fill",value.couleur);
@@ -120,7 +137,7 @@ socket.on("jouerTour",(data)=>{
             // console.log(hex);
             let damier = document.getElementById("tablier");
             damier.innerHTML+=`<image class="brochet"
-                                href="https://cdn.discordapp.com/attachments/1053644743009112154/1187396592723038450/rongeur1.png?ex=6596bc40&is=65844740&hm=96a717f1e769abd058976943512275105b9454b676d4f9561ec87f8a77f659a1&"
+                                href="http://localhost:8888/rongeur${indexJ+1}.png"
                                 x="${bbox.x-5}"  
                                 y="${bbox.y-6}"  
                                 width="50"  
@@ -128,4 +145,8 @@ socket.on("jouerTour",(data)=>{
                             />`;
         });
     });
+});
+
+socket.on("gagnant",(pseudo)=>{
+    document.getElementById("gagnant").innerHTML=`Le gagnant est ${pseudo}`
 });

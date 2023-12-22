@@ -22,7 +22,8 @@
         <div class="init">
             
             <!--Initialisation du pseudo-->
-            <p id="veuillez">Avant de vous connecter, veuillez saisir votre username, le nombre de joueurs dans la partie (si vous etes l'hôte), ainsi que vos statistiques!</p> 
+            <p id="veuillez">Avant de vous connecter, veuillez saisir votre username,  ainsi que vos statistiques! <br> 
+                Si vous êtes le premier joueur à vous connecter à la partie, vous êtes l'hote et vous pouvez changer le nombre de joueurs.</p> 
             <input type="text"  id="name">
             
             <br>
@@ -78,6 +79,8 @@
             <input type="button" value="Commencer le jeu" onclick="commencerJeu()">
             <input type="button" value="Déconnexion" onclick="sortie()">
         </div>
+
+        <center><div id="gagnant"></div></center>
         
         <!--Damier-->
         <div class="damier">

@@ -3,15 +3,18 @@
 
 Projet réalisé par Rigaud Kylian et Joigneault Clément
 
-[Lien vers le github du projet: https://github.com/cl-em/JS_PROJECT_2K23](https://github.com/cl-em/JS_PROJECT_2K23)
+Lien vers le github du projet: https://github.com/cl-em/JS_PROJECT_2K23
+
+- On a limité le nombre maximum d'animaux par équipe à 15, la population d'un joueur accroit de façon exponentielle
+
+- Les tanières sont lié par un tunnel spatio-temporel (juste un bug), deux animaux d'une même équipe peuvent se reproduire, même si ils se retrouvent dans deux tanières différentes (#feature???).
 
 
-![background](./lol.png)
-
+<img src="./rongeur1.png" width="150">
 
 ## Les fonctionnalitées 
 ### Coté serveur
-- serveur express, socket
+- serveur express, socket.io
 - class Animal permettant de définir les animaux 
 - génération du terrain
 - gestion automatique des hôtes
@@ -26,4 +29,5 @@ Projet réalisé par Rigaud Kylian et Joigneault Clément
 - le joueur peut choisir son pseudo, ses statistiques (perception, force, reproduction) et changer le nombre de joueurs de la partie s'il est hôte
 - affichage du terrain avec d3
 - les tanières sont mis en avant avec une image, les animaux également
-- un joueur peut changer une casse aléatoirement en cliquant dessus 
+
+![background](./background.png)

@@ -1,5 +1,5 @@
 body{
-    background-image: url('http://localhost:8888/lol.png');
+    background-image: url('http://localhost:8888/background.png');
     background-repeat: no-repeat;
     background-size: cover;
     overflow: hidden;
@@ -60,4 +60,8 @@ body{
 #tablier img{
     height: 100%;
     width: 100%;
+}
+
+#gagnant{
+    color: red;
 }
